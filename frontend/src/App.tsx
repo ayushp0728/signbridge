@@ -38,15 +38,17 @@ const App: React.FC = () => {
             path="/learning"
             element={user ? <Learning /> : <Navigate to="/signin" />}
           />
-          <Route path="/signin" element={<SignIn />} />
+          <Route
+            path="/profile"
+            element={user ? <Profile /> : <Navigate to="/signin" />}
+          />
           <Route
             path="/lobby"
             element={user ? <Lobby /> : <Navigate to="/signin" />}
           />
-          <Route
-            path="/room/:roomid"
-            element={user ? <LearningRoom /> : <Navigate to="/signin" />}
-          />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/lobby" element={<Lobby />} />
+          <Route path="/room/:roomid" element={<LearningRoom />} />
         </Routes>
       </div>
     </Router>
