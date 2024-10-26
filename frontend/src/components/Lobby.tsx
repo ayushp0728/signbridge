@@ -1,12 +1,40 @@
-import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "./AuthContext";
+import { firestore } from "./FirebaseConfig";
+import { collection, doc, getDoc } from "firebase/firestore";
 
 const Lobby = () => {
   const [roomLink, setRoomLink] = useState("");
   const [joinRoomId, setJoinRoomId] = useState("");
+  const [roomId, setRoomId] = useState<string | null>(null);
+
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchRoomId = async () => {
+      if (!user) return;
+
+      // Assuming `user` is already defined and contains the user object
+      const userRef = doc(collection(firestore, "users"), user.uid); // Create a reference to the user's document
+
+      try {
+        const docSnap = await getDoc(userRef); // Use getDoc to fetch the document
+        if (docSnap.exists()) {
+          // Check if the document exists
+          const data = docSnap.data(); // Get document data
+          if (data && data.roomId) {
+            setRoomId(data.roomId); // Set the room ID from Firestore
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching room ID:", error);
+      }
+    };
+
+    fetchRoomId();
+  }, [user]);
 
   const createRoom = () => {
-    const roomId = uuidv4();
     const link = `http://localhost:3000/room/${roomId}`;
     setRoomLink(link);
 
@@ -27,7 +55,6 @@ const Lobby = () => {
       </h1>
 
       <div className="flex space-x-10 bg-white p-10 rounded-lg shadow-lg">
-        
         {/* Create Room Section */}
         <div className="flex flex-col justify-center items-center p-6 bg-pastel-light-pink rounded-lg shadow-md">
           <button
@@ -67,7 +94,9 @@ const Lobby = () => {
             onClick={joinRoom}
             disabled={!joinRoomId}
             className={`w-full px-6 py-3 rounded-lg font-semibold transition ${
-              !joinRoomId ? "bg-gray-300" : "bg-pastel-light-green hover:bg-green-400"
+              !joinRoomId
+                ? "bg-gray-300"
+                : "bg-pastel-light-green hover:bg-green-400"
             } text-white`}
           >
             Join Room

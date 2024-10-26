@@ -1,22 +1,20 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; // Import Firestore
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCgioLi0UXJuDoUkYsFWbzuZtikTKreWVs",
-  authDomain: "signbridge-a714f.firebaseapp.com",
-  projectId: "signbridge-a714f",
-  storageBucket: "signbridge-a714f.appspot.com",
-  messagingSenderId: "273065782578",
-  appId: "1:273065782578:web:7e173a0fc8a927174abb2b",
-  measurementId: "G-GZMCRS9MC7"
+  apiKey: process.env.REACT_APP_PUBLIC_API_KEY,
+  authDomain: process.env.REACT_APP_PUBLIC_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+export const auth = getAuth(app);
+export const firestore = getFirestore(app); // Initialize Firestore
 
-export default app; 
+export default app;
