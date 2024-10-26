@@ -81,7 +81,7 @@ const LearningRoom: React.FC = () => {
 
         <button
           onClick={toggleWebcam}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+          className="px-4 py-2 w-40 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
         >
           {isCamActive ? "Stop Webcam" : "Start Webcam"}
         </button>
