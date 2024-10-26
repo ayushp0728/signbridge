@@ -1,23 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Dashboard from './components/Dashboard';
+import PartnerMode from './components/PartnerMode';
+import Learning from './components/Learning';
+import Navbar from './components/Navbar';
 
 const App: React.FC = () => {
-    const [message, setMessage] = useState<string>("");
-
-    useEffect(() => {
-        axios.get("http://127.0.0.1:8000/api/test/")
-            .then((response) => {
-                setMessage(response.data.message);
-            })
-            .catch((error) => {
-                console.error("Error fetching data:", error);
-            });
-    }, []);
-
     return (
-        <div className="App">
-            <h1>{message}</h1>
-        </div>
+        <Router>
+            <div className="App">
+                <Navbar /> {/* Add the Navbar here */}
+                <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/partner-mode" element={<PartnerMode />} />
+                    <Route path="/learning" element={<Learning />} />
+                </Routes>
+            </div>
+        </Router>
     );
 };
 
