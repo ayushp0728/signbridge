@@ -9,7 +9,7 @@
     top: 0;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
-    background-color: rgba(0, 0, 0, 0); /* Black w/ opacity */
+    background-color: rgba(0, 0, 0, 0.164); /* Black w/ opacity */
 }
 
 .popup-content {
