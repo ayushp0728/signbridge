@@ -75,14 +75,23 @@ async def add_to_database(sign_up_request: SignUpRequest):
     db.collection("users").document(sign_up_request.uid).set({
         "email": sign_up_request.email,
         "name": sign_up_request.name,
-        "friend_id": friend_id
+        "friend_id": friend_id,
+        "points": 0
     })
     
     return {"message": "User added to the database successfully", "friend_id": friend_id}
 
+class FriendRequest(BaseModel):
+    senderUid: str
+    friendId: str
+
+class AcceptRequest(BaseModel):
+    acceptingUid: str
+    requestingUid: str
+
 @app.post("/api/send_friend_request/")
 async def send_friend_request(request: FriendRequest):
-    # Get the friend by friendId
+    # Get the friend by friend_id
     friend_query = db.collection('users').where('friend_id', '==', request.friendId).get()
     if not friend_query:
         raise HTTPException(status_code=404, detail="Friend ID not found.")
@@ -90,32 +99,59 @@ async def send_friend_request(request: FriendRequest):
     friend_doc = friend_query[0]
     friend_uid = friend_doc.id
 
-    # Add sender's uid to the friend's sentRequests subcollection
-    db.collection('users').document(friend_uid).collection('friends').document('sentRequests').set({
+    # Add sender's UID to the friend's incomingRequests subcollection
+    db.collection('users').document(friend_uid).collection('friends').document('incomingRequests').set({
         request.senderUid: True  # Mark as a pending request
+    }, merge=True)
+
+    # Add friend's UID to sender's sentRequests subcollection
+    db.collection('users').document(request.senderUid).collection('friends').document('sentRequests').set({
+        friend_uid: True  # Mark as a sent request
     }, merge=True)
 
     return {"message": "Friend request sent successfully."}
 
 @app.post("/api/accept_friend_request/")
 async def accept_friend_request(request: AcceptRequest):
-    # Add requesting user to accepting user's acceptedFriends
-    db.collection('users').document(request.acceptingUid).collection('friends').document('acceptedFriends').set({
+    # Move requesting user from incomingRequests to friends for accepting user
+    db.collection('users').document(request.acceptingUid).collection('friends').document('friends').set({
         request.requestingUid: True
     }, merge=True)
 
-    # Add accepting user to requesting user's acceptedFriends
-    db.collection('users').document(request.requestingUid).collection('friends').document('acceptedFriends').set({
+    # Move accepting user from sentRequests to friends for requesting user
+    db.collection('users').document(request.requestingUid).collection('friends').document('friends').set({
         request.acceptingUid: True
     }, merge=True)
 
-    # Remove from sentRequests
-    db.collection('users').document(request.acceptingUid).collection('friends').document('sentRequests').update({
+    # Remove from incomingRequests for accepting user
+    db.collection('users').document(request.acceptingUid).collection('friends').document('incomingRequests').update({
         request.requestingUid: firestore.DELETE_FIELD
+    })
+
+    # Remove from sentRequests for requesting user
+    db.collection('users').document(request.requestingUid).collection('friends').document('sentRequests').update({
+        request.acceptingUid: firestore.DELETE_FIELD
     })
 
     return {"message": "Friend request accepted successfully."}
 
+@app.get("/api/get_incoming_requests/{user_uid}")
+async def get_incoming_requests(user_uid: str):
+    # Fetch incoming friend requests for the user
+    incoming_requests = db.collection('users').document(user_uid).collection('friends').document('incomingRequests').get()
+    return list(incoming_requests.to_dict().keys()) if incoming_requests.exists else []
+
+@app.get("/api/get_sent_requests/{user_uid}")
+async def get_sent_requests(user_uid: str):
+    # Fetch sent friend requests for the user
+    sent_requests = db.collection('users').document(user_uid).collection('friends').document('sentRequests').get()
+    return list(sent_requests.to_dict().keys()) if sent_requests.exists else []
+
+@app.get("/api/get_friends/{user_uid}")
+async def get_friends(user_uid: str):
+    # Fetch accepted friends for the user
+    friends = db.collection('users').document(user_uid).collection('friends').document('friends').get()
+    return list(friends.to_dict().keys()) if friends.exists else []
 
 # Keep track of users in each room
 rooms: Dict[str, List[WebSocket]] = {}
