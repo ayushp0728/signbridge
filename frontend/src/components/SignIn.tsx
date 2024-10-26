@@ -65,9 +65,9 @@ const SignIn: React.FC = () => {
     };
 
     return (
-        <div>
-            <h1>{isSignUp ? 'Sign Up' : 'Sign In'}</h1>
+        <div className="container">
             <form onSubmit={isSignUp ? handleSignUp : handleSignIn}>
+                <h2>{isSignUp ? 'Sign Up' : 'Sign In'}</h2>
                 <input
                     type="email"
                     placeholder="Email"
@@ -82,15 +82,14 @@ const SignIn: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-
                 <button type="submit">{isSignUp ? 'Sign Up' : 'Sign In'}</button>
+                {error && <p className="error-message">{error}</p>}
+                <button onClick={toggleSignUp} className="toggle-button">
+                    {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
+                </button>
             </form>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <button onClick={toggleSignUp} className="toggle-button">
-                {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
-            </button>
         </div>
-    );
+    );    
 };
 
 export default SignIn;

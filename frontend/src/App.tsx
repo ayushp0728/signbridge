@@ -43,7 +43,8 @@ const App: React.FC = () => {
     return (
         <Router>
             <div className="App">
-                <Navbar /> {/* Add the Navbar here */}
+                {/* Render Navbar only if user is authenticated */}
+                {user && <Navbar />}
                 <Routes>
                     <Route path="/" element={user ? <Dashboard /> : <Navigate to="/signin" />} />
                     <Route path="/partner-mode" element={user ? <PartnerMode /> : <Navigate to="/signin" />} />
@@ -56,4 +57,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
