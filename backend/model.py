@@ -1,7 +1,7 @@
 import cv2
 import matplotlib.pyplot as plt
 import mediapipe as mp
-import pickle
+import joblib  # Import joblib instead of pickle
 import numpy as np
 from PIL import Image
 from fastapi import UploadFile
@@ -10,8 +10,6 @@ import os
 
 warnings.filterwarnings('ignore', category=UserWarning, module="google")
 
-
-
 def model_pipeline(file: UploadFile):
     print("1")
     mp_hands = mp.solutions.hands
@@ -19,8 +17,8 @@ def model_pipeline(file: UploadFile):
 
     print("2")
     try:
-        model_dict = pickle.load(open('./test_model_!.p', 'rb'))
-        model = model_dict['test_model_1']
+        # Use joblib to load the model instead of pickle
+        model = joblib.load('./test_model_2.joblib')
         
         # Check if the model has a predict method
         if not hasattr(model, "predict"):
@@ -30,6 +28,7 @@ def model_pipeline(file: UploadFile):
         if hasattr(model, "n_estimators"):
             print(f"Number of estimators: {model.n_estimators}")
     except Exception as e:
+        print(str(e));
         raise ValueError(f"Error loading model: {str(e)}")
 
     print("3")
