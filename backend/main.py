@@ -23,6 +23,14 @@ class SignUpRequest(BaseModel):
     email: str
     name: str  # Add the name field
 
+class FriendRequest(BaseModel):
+    senderUid: str
+    friendId: str
+
+class AcceptRequest(BaseModel):
+    acceptingUid: str
+    requestingUid: str
+
 @app.post("/api/signup/")
 async def sign_up(sign_up_request: SignUpRequest):
     try:
@@ -52,3 +60,38 @@ async def add_to_database(sign_up_request: SignUpRequest):
     
     return {"message": "User added to the database successfully", "friend_id": friend_id}
 
+@app.post("/api/send_friend_request/")
+async def send_friend_request(request: FriendRequest):
+    # Get the friend by friendId
+    friend_query = db.collection('users').where('friend_id', '==', request.friendId).get()
+    if not friend_query:
+        raise HTTPException(status_code=404, detail="Friend ID not found.")
+
+    friend_doc = friend_query[0]
+    friend_uid = friend_doc.id
+
+    # Add sender's uid to the friend's sentRequests subcollection
+    db.collection('users').document(friend_uid).collection('friends').document('sentRequests').set({
+        request.senderUid: True  # Mark as a pending request
+    }, merge=True)
+
+    return {"message": "Friend request sent successfully."}
+
+@app.post("/api/accept_friend_request/")
+async def accept_friend_request(request: AcceptRequest):
+    # Add requesting user to accepting user's acceptedFriends
+    db.collection('users').document(request.acceptingUid).collection('friends').document('acceptedFriends').set({
+        request.requestingUid: True
+    }, merge=True)
+
+    # Add accepting user to requesting user's acceptedFriends
+    db.collection('users').document(request.requestingUid).collection('friends').document('acceptedFriends').set({
+        request.acceptingUid: True
+    }, merge=True)
+
+    # Remove from sentRequests
+    db.collection('users').document(request.acceptingUid).collection('friends').document('sentRequests').update({
+        request.requestingUid: firestore.DELETE_FIELD
+    })
+
+    return {"message": "Friend request accepted successfully."}
