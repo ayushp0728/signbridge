@@ -117,27 +117,31 @@ async def accept_friend_request(request: AcceptRequest):
     return {"message": "Friend request accepted successfully."}
 
 
-# In-memory storage for rooms and connections
+# Keep track of users in each room
 rooms: Dict[str, List[WebSocket]] = {}
 
 @app.websocket("/ws/{room_id}")
 async def websocket_endpoint(websocket: WebSocket, room_id: str):
     await websocket.accept()
-
-    # Create room if it doesn't exist and add the websocket
     if room_id not in rooms:
         rooms[room_id] = []
     rooms[room_id].append(websocket)
 
+    # Notify all clients in the room of the new user count
+    await notify_user_count(room_id)
+
     try:
         while True:
             data = await websocket.receive_text()
-            
-            # Relay the received data to all peers in the room
             for client in rooms[room_id]:
                 if client != websocket:
                     await client.send_text(data)
     except WebSocketDisconnect:
         rooms[room_id].remove(websocket)
-        if not rooms[room_id]:  # Delete the room if it's empty
-            del rooms[room_id]
+        # Notify remaining clients of the updated user count
+        await notify_user_count(room_id)
+
+async def notify_user_count(room_id: str):
+    user_count = len(rooms[room_id])
+    for client in rooms[room_id]:
+        await client.send_text(f'{{"type": "user_count", "count": {user_count}}}')
