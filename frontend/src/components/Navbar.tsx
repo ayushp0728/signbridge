@@ -8,12 +8,10 @@ const Navbar: React.FC = () => {
             <ul>
                 <li>
                     <Link to="/">Dashboard</Link>
-                </li>
-                <li>
-                    <Link to="/partner-mode">Partner Mode</Link>
-                </li>
-                <li>
                     <Link to="/learning">Learning</Link>
+                    <Link to="/partner-mode">Partner Mode</Link>
+                    <Link to="/lobby">Lobby</Link>
+                    <Link to="/profile">Profile</Link>
                 </li>
             </ul>
         </nav>

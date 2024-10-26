@@ -14,6 +14,7 @@ import Navbar from "./components/Navbar";
 import SignIn from "./components/SignIn";
 import LearningRoom from "./components/LearningRoom";
 import Lobby from "./components/Lobby";
+import Profile from "./components/Profile"
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -64,9 +65,22 @@ const App: React.FC = () => {
             path="/learning"
             element={user ? <Learning /> : <Navigate to="/signin" />}
           />
+          <Route
+            path="/profile"
+            element={user ? <Profile /> : <Navigate to="/signin" />}
+          />
+          <Route
+            path="/lobby"
+            element={user ? <Lobby /> : <Navigate to="/signin" />}
+          />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/lobby" element={<Lobby />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/room/:roomid" element={<LearningRoom />} />
+          <Route
+            path="/"
+            element={user ? <Dashboard /> : <Navigate to="/signin" />}
+          />
         </Routes>
       </div>
     </Router>
