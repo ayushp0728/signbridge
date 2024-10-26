@@ -5,6 +5,7 @@ import PartnerMode from "./components/PartnerMode";
 import Learning from "./components/Learning";
 import Navbar from "./components/Navbar";
 import Lobby from "./components/Lobby";
+import LearningRoom from "./components/LearningRoom";
 
 const App: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
           <Route path="/partner-mode" element={<PartnerMode />} />
           <Route path="/learning" element={<Learning />} />
           <Route path="/lobby" element={<Lobby />} />
+          <Route path="/room/:roomid" element={<LearningRoom />} />
         </Routes>
       </div>
     </Router>
