@@ -54,7 +54,7 @@ async def upload_image(file: UploadFile = File(...)):
         result = model_pipeline(file)
         print(result)
 
-        return {"message": "Image uploaded successfully"}
+        return {"status": 200, "letter": result[0]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

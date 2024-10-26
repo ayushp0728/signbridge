@@ -59,12 +59,15 @@ def model_pipeline(file: UploadFile):
 
     print("5")
     
-    if not data_aux:
-        raise ValueError("No hand landmarks detected.")
+    try:
+        if not data_aux:
+            raise ValueError("No hand landmarks detected.")
 
-    flattened_data = np.array(data_aux).reshape(1, -1)
-    print("Flattened landmarks for the image:", flattened_data)
-    print("Shape of flattened_data:", flattened_data.shape)
+        flattened_data = np.array(data_aux).reshape(1, -1)
+        print("Flattened landmarks for the image:", flattened_data)
+        print("Shape of flattened_data:", flattened_data.shape)
+    except e:
+        print(str(e))
 
     print("6")
     try:
