@@ -22,6 +22,7 @@ const auth = getAuth(app);
 const SignIn: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [name, setName] = useState(''); // New state for the user's name
     const [error, setError] = useState<string | null>(null);
     const [isSignUp, setIsSignUp] = useState(false); // Toggle between Sign In and Sign Up
     const navigate = useNavigate();
@@ -46,10 +47,32 @@ const SignIn: React.FC = () => {
     const handleSignUp = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
+            // Create user with Firebase Authentication
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             console.log('User signed up:', userCredential.user);
-            
+    
+            // Send user data to FastAPI backend
+            const response = await fetch('http://localhost:8000/api/database/', { // FastAPI endpoint with trailing slash
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    uid: userCredential.user.uid,
+                    email: userCredential.user.email,
+                    name: name, // Include name in the request body
+                }),
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error from backend: ${response.statusText}`);
+            }
+    
+            const data = await response.json();
+            console.log("Data from FastAPI backend:", data); // Log the response from FastAPI
+    
             navigate('/'); // Redirect to the dashboard after successful sign-up
+    
         } catch (error) {
             if (error instanceof Error) {
                 setError(error.message);
@@ -69,6 +92,15 @@ const SignIn: React.FC = () => {
         <div className="container">
             <form onSubmit={isSignUp ? handleSignUp : handleSignIn}>
                 <h2>{isSignUp ? 'Sign Up' : 'Sign In'}</h2>
+                {isSignUp && ( // Only show the name field during sign-up
+                    <input
+                        type="text"
+                        placeholder="Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                    />
+                )}
                 <input
                     type="email"
                     placeholder="Email"

@@ -37,6 +37,17 @@ input[type="password"] {
     font-size: 16px;
     color: #333;
 }
+input[type="text"],
+input[type="Name"] {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    font-size: 16px;
+    color: #333;
+}
 
 input[type="email"]:focus,
 input[type="password"]:focus {
