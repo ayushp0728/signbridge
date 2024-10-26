@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import "./partnermode.css"; // Import the new CSS file
 
 const PartnerMode: React.FC = () => {
   const [roomId, setRoomId] = useState("");
@@ -13,12 +14,10 @@ const PartnerMode: React.FC = () => {
   useEffect(() => {
     let captureInterval: NodeJS.Timeout;
     if (isJoined) {
-      // Start the frame capture every 3 seconds once the user joins the room
       captureInterval = setInterval(captureAndSendFrame, 3000);
     }
-
     return () => {
-      clearInterval(captureInterval); // Clear interval on component unmount
+      clearInterval(captureInterval);
     };
   }, [isJoined]);
 
@@ -132,6 +131,18 @@ const PartnerMode: React.FC = () => {
     webSocket.current?.send(JSON.stringify({ type: "offer", offer }));
   };
 
+  const endCall = () => {
+    peerConnection.current?.close();
+    peerConnection.current = null;
+
+    const stream = localVideoRef.current?.srcObject as MediaStream;
+    stream?.getTracks().forEach((track) => track.stop());
+
+    setIsJoined(false);
+    setRoomId("");
+    setUserCount(0);
+  };
+
   return (
     <div className="video-container">
       {!isJoined ? (
@@ -149,7 +160,10 @@ const PartnerMode: React.FC = () => {
           <div className="user-count">Users in Room: {userCount}</div>
           <video ref={localVideoRef} autoPlay playsInline muted className="local-video" />
           <video ref={remoteVideoRef} autoPlay playsInline className="remote-video" />
-          <button onClick={createOffer} className="connect-button">Start Call</button>
+          <div className="button-container">
+            <button onClick={createOffer} className="connect-button">Start Call</button>
+            <button onClick={endCall} className="end-call-button">End Call</button>
+          </div>
         </>
       )}
     </div>
