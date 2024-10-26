@@ -5,7 +5,7 @@ from firebase_admin import credentials, auth, firestore
 cred = credentials.Certificate('signbridge-a714f-firebase-adminsdk-y1qob-7de091837e.json')
 firebase_admin.initialize_app(cred)
 
-db = firestore.Client()
+db = firestore.client()
 
 def create_user(email: str, password: str):
     """Create a new user in Firebase."""
