@@ -48,19 +48,7 @@ const SignIn: React.FC = () => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             console.log('User signed up:', userCredential.user);
-
-            // Send user data to FastAPI backend
-            await fetch('http://localhost:8000/api/database', { // Replace with your FastAPI endpoint
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    uid: userCredential.user.uid,
-                    email: userCredential.user.email,
-                }),
-            });
-
+            
             navigate('/'); // Redirect to the dashboard after successful sign-up
         } catch (error) {
             if (error instanceof Error) {
