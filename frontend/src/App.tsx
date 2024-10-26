@@ -14,6 +14,7 @@ const App: React.FC = () => {
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/partner-mode" element={<PartnerMode />} />
                     <Route path="/learning" element={<Learning />} />
+                    <Route path="/createRoom" element={<Learning />} />
                 </Routes>
             </div>
         </Router>
