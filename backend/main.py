@@ -1,6 +1,7 @@
 import os
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File, WebSocket, WebSocketDisconnect
+from typing import List, Dict
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from firebase_config import create_user
@@ -114,3 +115,29 @@ async def accept_friend_request(request: AcceptRequest):
     })
 
     return {"message": "Friend request accepted successfully."}
+
+
+# In-memory storage for rooms and connections
+rooms: Dict[str, List[WebSocket]] = {}
+
+@app.websocket("/ws/{room_id}")
+async def websocket_endpoint(websocket: WebSocket, room_id: str):
+    await websocket.accept()
+
+    # Create room if it doesn't exist and add the websocket
+    if room_id not in rooms:
+        rooms[room_id] = []
+    rooms[room_id].append(websocket)
+
+    try:
+        while True:
+            data = await websocket.receive_text()
+            
+            # Relay the received data to all peers in the room
+            for client in rooms[room_id]:
+                if client != websocket:
+                    await client.send_text(data)
+    except WebSocketDisconnect:
+        rooms[room_id].remove(websocket)
+        if not rooms[room_id]:  # Delete the room if it's empty
+            del rooms[room_id]
