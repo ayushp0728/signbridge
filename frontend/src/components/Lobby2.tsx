@@ -21,7 +21,7 @@ const Lobby = () => {
           {Array.from({ length: 26 }, (_, i) => (
             <a
               key={i}
-              href={`/learning-room/${i}`}
+              href={`/learning/${i}`}
               className="lobby-button"
               style={{ animationDelay: `${i * 0.1}s` }} // Staggering animation
             >
@@ -38,7 +38,7 @@ const Lobby = () => {
           {Array.from({ length: 10 }, (_, i) => (
             <a
               key={i + 26}
-              href={`/learning-room/${i + 26}`}
+              href={`/learning/${i + 26}`}
               className="lobby-button"
               style={{ animationDelay: `${(i + 26) * 0.1}s` }} // Staggering animation
             >

@@ -12,13 +12,23 @@ from model import model_pipeline
 
 
 app = FastAPI()
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["http://localhost:3000"],  # Update this to match your frontend's URL
+#     allow_credentials=True,
+#     allow_methods=["*"],  # Allows all HTTP methods (GET, POST, OPTIONS, etc.)
+#     allow_headers=["*"],  # Allows all headers
+# )
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Update this to match your frontend's URL
+    allow_origins=["*"],  # Adjust for tighter security if needed
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all HTTP methods (GET, POST, OPTIONS, etc.)
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 
 db = firestore.client()
 
@@ -72,8 +82,9 @@ def createFriendID():
 # Endpoint to add user data to the database
 @app.post("/api/database/")
 async def add_to_database(sign_up_request: SignUpRequest):
+    print("Called")
     friend_id = createFriendID()
-    
+    print(friend_id)
     # Here, replace this part with code to store `user_document` in your actual database.
     db.collection("users").document(sign_up_request.uid).set({
         "email": sign_up_request.email,
