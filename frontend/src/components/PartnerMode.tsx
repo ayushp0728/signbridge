@@ -22,7 +22,9 @@ const PartnerMode: React.FC = () => {
   const joinRoom = () => {
     if (roomId) {
       setIsJoined(true);
-      webSocket.current = new WebSocket(`wss://c534-128-6-37-59.ngrok-free.app/ws/${roomId}`);
+      webSocket.current = new WebSocket(
+        `wss://c534-128-6-37-59.ngrok-free.app/ws/${roomId}`
+      );
       webSocket.current.onmessage = handleSignalingData;
       startLocalStream();
 
@@ -106,12 +108,12 @@ const PartnerMode: React.FC = () => {
         }
         break;
 
-      case "sentence":
-        // Receive the generated sentence and display it
-        setSentence1(0);
-        setSentence2(0);
-        sentence.current = data.sentence;
-        break;
+      // case "sentence":
+      //   // Receive the generated sentence and display it
+      //   setSentence1(0);
+      //   setSentence2(0);
+      //   sentence.current = data.sentence;
+      //   break;
     }
   };
 
@@ -142,24 +144,24 @@ const PartnerMode: React.FC = () => {
             );
             console.log(response.data.message); // Log the response message
 
-            if (response.status === 200) {
-              const jsonResponse = await response.data;
-              const { letter } = jsonResponse;
+            // if (response.status === 200) {
+            //   const jsonResponse = await response.data;
+            //   const { letter } = jsonResponse;
 
-              const doneLetterCount = sentence1 ?? 0;
-              if (doneLetterCount < sentence.current.length) {
-                const nextLetterNeeded =
-                  sentence.current[(sentence1 ?? -1) + 1];
-                if (letter === nextLetterNeeded) {
-                  setSentence1((sentence1 ?? -1) + 1);
-                }
-              }
-            } else {
-              console.error(
-                "Error in getting user1 progress:",
-                response.statusText
-              );
-            }
+            //   const doneLetterCount = sentence1 ?? 0;
+            //   if (doneLetterCount < sentence.current.length) {
+            //     const nextLetterNeeded =
+            //       sentence.current[(sentence1 ?? -1) + 1];
+            //     if (letter === nextLetterNeeded) {
+            //       setSentence1((sentence1 ?? -1) + 1);
+            //     }
+            //   }
+            // } else {
+            //   console.error(
+            //     "Error in getting user1 progress:",
+            //     response.statusText
+            //   );
+            // }
           } catch (error) {
             console.error("Error uploading local frame:", error);
           }
@@ -195,24 +197,24 @@ const PartnerMode: React.FC = () => {
             );
             console.log(response.data.message); // Log the response message
 
-            if (response.status === 200) {
-              const jsonResponse = await response.data;
-              const { letter } = jsonResponse;
+            // if (response.status === 200) {
+            //   const jsonResponse = await response.data;
+            //   const { letter } = jsonResponse;
 
-              const doneLetterCount = sentence2 ?? 0;
-              if (doneLetterCount < sentence.current.length) {
-                const nextLetterNeeded =
-                  sentence.current[(sentence2 ?? -1) + 1];
-                if (letter === nextLetterNeeded) {
-                  setSentence1((sentence2 ?? -1) + 1);
-                }
-              }
-            } else {
-              console.error(
-                "Error in getting user1 progress:",
-                response.statusText
-              );
-            }
+            //   const doneLetterCount = sentence2 ?? 0;
+            //   if (doneLetterCount < sentence.current.length) {
+            //     const nextLetterNeeded =
+            //       sentence.current[(sentence2 ?? -1) + 1];
+            //     if (letter === nextLetterNeeded) {
+            //       setSentence1((sentence2 ?? -1) + 1);
+            //     }
+            //   }
+            // } else {
+            //   console.error(
+            //     "Error in getting user1 progress:",
+            //     response.statusText
+            //   );
+            // }
           } catch (error) {
             console.error("Error uploading remote frame:", error);
           }
@@ -231,19 +233,19 @@ const PartnerMode: React.FC = () => {
     webSocket.current?.send(JSON.stringify({ type: "offer", offer }));
 
     // Trigger sentence generation after a short delay
-    if (isFirstCaller.current) {
-      setTimeout(() => {
-        const generatedSentence = "Your generated sentence goes here!";
-        sentence.current = generatedSentence;
-        setSentence1(-1);
-        setSentence2(-1);
+    // if (isFirstCaller.current) {
+    //   setTimeout(() => {
+    //     const generatedSentence = "Your generated sentence goes here!";
+    //     sentence.current = generatedSentence;
+    //     setSentence1(-1);
+    //     setSentence2(-1);
 
-        // Send the sentence to the other caller
-        webSocket.current?.send(
-          JSON.stringify({ type: "sentence", sentence: generatedSentence })
-        );
-      }, 3000); // 3-second delay (adjust as needed)
-    }
+    //     // Send the sentence to the other caller
+    //     webSocket.current?.send(
+    //       JSON.stringify({ type: "sentence", sentence: generatedSentence })
+    //     );
+    //   }, 3000); // 3-second delay (adjust as needed)
+    // }
   };
 
   const endCall = () => {
