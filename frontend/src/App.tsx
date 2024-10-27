@@ -23,9 +23,10 @@ import './global.css';
 const App: React.FC = () => {
   const { user, loading } = useAuth();
   const [points, setPoints] = useState<string>('0'); // State to store user points
+  const [userName, setUserName] = useState<string>(''); // State to store user name
 
   useEffect(() => {
-    const fetchUserPoints = async () => {
+    const fetchUserData = async () => {
       if (user) {
         const auth = getAuth();
         const db = getFirestore();
@@ -33,14 +34,15 @@ const App: React.FC = () => {
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
-          const { points } = userDoc.data();
+          const { points, name } = userDoc.data();
           setPoints(points || '0'); // Set points from Firestore or fallback to '0'
+          setUserName(name || "No Name"); // Set name from Firestore or fallback
         }
       }
     };
 
-    fetchUserPoints();
-  }, [user]); // Fetch points when the user changes
+    fetchUserData();
+  }, [user]); // Fetch user data when the user changes
 
   if (loading) {
     return <div>Loading...</div>; // You can show a loading spinner here
@@ -53,7 +55,7 @@ const App: React.FC = () => {
         <Routes>
           <Route
             path="/"
-            element={user ? <Dashboard points={points} /> : <Navigate to="/signin" />}
+            element={user ? <Dashboard points={points} userName={userName} /> : <Navigate to="/signin" />}
           />
           <Route
             path="/partner-mode"

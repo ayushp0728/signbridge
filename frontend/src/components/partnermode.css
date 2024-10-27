@@ -1,66 +1,98 @@
+/* partnermode.css */
+
+/* Container styling */
 .video-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s forwards; /* Fade-in animation */
+}
+
+/* Join Room section styling */
+.border {
+  border: 2px solid #c5a9ff; /* Soft violet border */
+  background-color: #ffffff; /* White background for cards */
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Header styling */
+h2 {
+  color: #4b0082; /* Dark violet for header */
+  margin-bottom: 20px;
+}
+
+/* Input styling */
+input {
+  width: 250px;
+  padding: 10px;
+  border: 2px solid #dcdcdc; /* Light gray border */
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+/* Focus effect on input */
+input:focus {
+  border-color: #5a5ea5; /* Purple focus border */
+}
+
+/* Button styling */
+button {
+  background-color: #4a90e2; /* Blue background */
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+/* Button hover effects */
+button:hover {
+  background-color: #357ab9; /* Darker blue on hover */
+  transform: translateY(-2px);
+}
+
+/* User count styling */
+.user-count {
+  font-size: 24px;
+  color: #4b0082; /* Dark violet text */
+  margin-bottom: 20px;
+}
+
+/* Video styling */
+video {
+  width: 450px; /* Fixed size for video */
+  height: 300px;
+  background-color: #333333; /* Dark gray background for video */
+  border-radius: 10px;
+}
+
+/* Button container styling */
+.button-container {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* Responsive video container */
+@media (max-width: 600px) {
+  video {
+    width: 100%; /* Full width for smaller screens */
   }
-  
-  .join-room {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* Slide up effect */
   }
-  
-  input[type="text"] {
-    padding: 8px 12px;
-    border: 1px solid #dcdcdc;
-    border-radius: 4px;
-    font-size: 1rem;
-    width: 100%;
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .connect-button {
-    background-color: #4caf50;
-    color: #ffffff;
-    margin-right: 10px;
-  }
-  
-  .end-call-button {
-    background-color: #f44336;
-    color: #ffffff;
-  }
-  
-  .button-container {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  
-  .local-video, .remote-video {
-    border-radius: 8px;
-    width: 100%;
-    max-width: 500px;
-    margin-top: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  .user-count {
-    font-size: 1.1rem;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
+}
