@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import Popup from './Popup';
-import PartitionedProgressBar from './PartitionedProgressBar';
+import Quickstart from './Quickstart';
 
 interface DashboardProps {
   points: string; // Receive points as a prop
@@ -12,6 +12,7 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ points, userName }) => {
   const navigate = useNavigate();
   const [isPopupOpen, setPopupOpen] = useState(false);
+  const [isQuickstartOpen, setQuickstartOpen] = useState(false); // Manage Quickstart state
   const [topicProgress, setTopicProgress] = useState([
     { label: 'Alphabet', percentage: 50 },
     { label: 'Numbers', percentage: 75 },
@@ -44,13 +45,16 @@ const Dashboard: React.FC<DashboardProps> = ({ points, userName }) => {
     setPopupOpen(false);
   };
 
+  const handleQuickstartClose = () => {
+    setQuickstartOpen(false);
+  };
+
   return (
     <div className="dashboard">
       <div className="dashboard-header">
         <h1 className="dashboard-title">Welcome to SignBridge, {userName}!</h1>
       </div>
 
-      
       <div className="lesson-section">
         <div className="lesson-card">
           <h2>Individual Lesson</h2>
@@ -63,12 +67,16 @@ const Dashboard: React.FC<DashboardProps> = ({ points, userName }) => {
       </div>
 
       <div className="dashboard-links">
-        <button onClick={() => navigate('/learning')}>Learning</button>
+        <button onClick={() => setQuickstartOpen(true)}>Open Quickstart</button>
         <button onClick={() => navigate('/partner-mode')}>Partner Mode</button>
       </div>
 
-      <PartitionedProgressBar topics={topicProgress} />
-      <h2>  </h2>
+      <div className="logo-section">
+        <img src="/asllogo.png" alt="ASL Logo" style={{ width: "600px", height: "auto" }} />
+        <p>Bridging the Gap Between Silence and Connection</p>
+      </div>
+
+      <h2></h2>
 
       <div className="progress-bar">
         <div
@@ -79,6 +87,9 @@ const Dashboard: React.FC<DashboardProps> = ({ points, userName }) => {
       <p>{Number(points)} / {MAX_POINTS} Points</p>
 
       <Popup isOpen={isPopupOpen} onClose={handlePopupClose} />
+
+      {/* Render Quickstart Popup if open */}
+      {isQuickstartOpen && <Quickstart onClose={handleQuickstartClose} />}
     </div>
   );
 };

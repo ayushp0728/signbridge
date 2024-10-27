@@ -1,0 +1,36 @@
+.quickstart-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    z-index: 1000; /* Make sure it appears on top */
+    width: 300px; /* Adjust width as needed */
+    text-align: center;
+  }
+  
+  .quickstart-controls {
+    margin: 20px 0;
+  }
+  
+  .quickstart-controls button {
+    margin: 0 5px;
+  }
+  
+  .close-button {
+    background-color: #f44336; /* Red */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .close-button:hover {
+    background-color: #c62828; /* Darker red */
+  }
+  

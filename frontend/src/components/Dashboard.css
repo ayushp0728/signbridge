@@ -98,7 +98,7 @@ body {
 }
 
 .dashboard button:hover {
-  background-color: #45a049;
+  background-color: #6566ba;
 }
 
 /* Animation Keyframes */
@@ -121,4 +121,37 @@ body {
   height: 100%;
   background-color: #7779e1; /* Color of the progress */
   transition: width 0.5s ease; /* Smooth transition */
+}
+
+.logo-section {
+  display: flex; /* Use flexbox for horizontal alignment */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  margin: 20px 0; /* Space above and below the section */
+  animation: fadeIn 0.3s forwards; /* Fade-in animation */
+}
+
+.logo-section img {
+  margin-right: 20px; /* Adjust distance between the image and text */
+}
+
+.logo-section p {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 2rem; /* Font size for slogan */
+  font-weight: bold; /* Make text bold */
+  color: #333; /* Dark color for contrast */
+  text-align: left; /* Align text to the left */
+  animation: fadeIn 1s forwards; /* Fade-in animation */
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* Slide up effect */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
