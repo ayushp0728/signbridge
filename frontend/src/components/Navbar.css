@@ -17,12 +17,12 @@
 }
 
 .navbar a {
-    color: white; /* Change link color */
+    color: rgb(255, 255, 255); /* Change link color */
     text-decoration: none;
     padding: 10px 15px;
     transition: background-color 0.3s;
 }
 
 .navbar a:hover {
-    background-color: #005fcc; /* Change hover color */
+    background-color: rgb(133, 229, 248); /* Change hover color */
 }
