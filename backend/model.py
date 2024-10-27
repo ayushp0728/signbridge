@@ -18,7 +18,8 @@ def model_pipeline(file: UploadFile):
     print("2")
     try:
         # Use joblib to load the model instead of pickle
-        model = joblib.load('./Actual1_kNN_model.joblib')
+        model = joblib.load('./Actual2_model_w_angles.joblib')
+        # model = joblib.load('./Actual1_kNN_model.joblib')
         
         # Check if the model has a predict method
         if not hasattr(model, "predict"):
