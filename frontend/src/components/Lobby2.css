@@ -1,79 +1,86 @@
 /* lobby.css */
 
 .lobby-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #f0f4f8; /* Soft background color */
-    transition: background-color 0.5s;
-    padding: 20rem; /* Add padding for better spacing */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f0f4f8; /* Soft background color */
+  transition: background-color 0.5s;
+  padding: 20rem; /* Add padding for better spacing */
 }
 
+
 .lobby-title {
-    font-size: 3rem; /* Smaller font size */
-    font-weight: bold;
-    margin-bottom: 1rem; /* Adjusted margin */
-    color: #6ca0f4; /* Pastel light blue */
-    text-align: center;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); /* Slight shadow for depth */
+  font-size: 3rem; /* Smaller font size */
+  font-weight: bold;
+  margin-bottom: 1rem; /* Adjusted margin */
+  color: #6ca0f4; /* Pastel light blue */
+  text-align: center;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); /* Slight shadow for depth */
 }
 
 .lobby-description {
-    font-size: 1.2rem; /* Slightly smaller font size */
-    text-align: center;
-    margin-bottom: 2rem;
-    color: #272954; /* Darker text color for better readability */
+  font-size: 1.2rem; /* Slightly smaller font size */
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #272954; /* Darker text color for better readability */
 }
 
 .lobby-section {
-    margin-top: 2rem;
-    width: 100%; /* Full width for sections */
+  margin-top: 2rem;
+  width: 100%; /* Full width for sections */
 }
 
 .lobby-subtitle {
-    font-size: 2rem;
-    font-weight: bold;
-    margin: 1rem 0;
-    text-align: center;
-    color: #4f83cc; /* Different shade for subtitles */
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 1rem 0;
+  text-align: center;
+  color: #4f83cc; /* Different shade for subtitles */
 }
 
 .lobby-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 3 columns */
-    gap: 1rem;
-    padding: 0 2rem; /* Add horizontal padding */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 3 columns */
+  gap: 1rem;
+  padding: 0 2rem; /* Add horizontal padding */
 }
 
 .lobby-button {
-    display: block;
-    padding: 0.5rem; /* Smaller padding for smaller buttons */
-    font-size: 1rem; /* Smaller font size for buttons */
-    text-align: center;
-    background-color: #4f83cc; /* Button color */
-    color: white;
-    border-radius: 0.5rem;
-    transition: background-color 0.3s;
-    text-decoration: none;
-    opacity: 0; /* Initially hidden for animation */
-    animation: fadeIn 0.3s forwards; /* Fade-in animation */
+  display: block;
+  padding: 0.5rem; /* Smaller padding for smaller buttons */
+  font-size: 1rem; /* Smaller font size for buttons */
+  text-align: center;
+  background-color: #4f83cc; /* Button color */
+  color: white;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s;
+  text-decoration: none;
+  opacity: 0; /* Initially hidden for animation */
+  animation: fadeIn 0.3s forwards; /* Fade-in animation */
 }
 
 /* Fade-in animation */
 @keyframes fadeIn {
-    0% {
-        opacity: 0;
-        transform: translateY(20px); /* Slide up effect */
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* Slide up effect */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Hover effect for buttons */
 .lobby-button:hover {
-    background-color: #357ab5; /* Darker blue on hover */
+  background-color: #357ab5; /* Darker blue on hover */
 }
+
+.green-button {
+    background-color: green;
+    color: white; /* Optional: make text color white for contrast */
+  }
+  

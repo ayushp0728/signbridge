@@ -206,11 +206,47 @@ async def log_correct_answer(uid: str, completed_lesson: CompletedLessonRequest)
     if not user_doc.exists:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Update the completed_lessons field
-    completed_lessons = user_doc.to_dict().get("completed_lessons", [])
-    completed_lessons.append(completed_lesson.letter)  # Append the new letter
+    # Get the existing hashmap for completed lessons, or initialize an empty one
+    user_data = user_doc.to_dict()
+    completed_lessons = user_data.get("completed_lessons", {})
+    points = user_data.get("points", 0)
 
-    # Update the document in Firestore
-    user_ref.update({"completed_lessons": completed_lessons})
+    # Increment the count for the lesson letter
+    letter = completed_lesson.letter
+    if letter in completed_lessons:
+        completed_lessons[letter] += 1
+    else:
+        completed_lessons[letter] = 1
+        points += 100  # Increment points if it's a new key
 
-    return {"status": "success", "message": "Logged successfully", "completed_lessons": completed_lessons}
+
+    # Update the document in Firestore with the updated hashmap
+    user_ref.update({
+        "completed_lessons": completed_lessons,         
+        "points": points
+    })
+
+    return {
+        "status": "success",
+        "message": "Logged successfully",
+        "completed_lessons": completed_lessons,
+        "points": points
+    }
+
+@app.get("/api/get-user-achievements/{uid}")
+async def get_user_achievements(uid: str):
+    user_ref = db.collection("users").document(uid)
+
+    # Fetch the user document
+    user_doc = user_ref.get()
+    if not user_doc.exists:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Get the existing hashmap for completed lessons, or initialize an empty one
+    completed_lessons = user_doc.to_dict().get("completed_lessons", {})
+    print(completed_lessons)
+    return {
+        "status": "success",
+        "message": "Logged successfully",
+        "achievements": completed_lessons
+    }
