@@ -1,30 +1,33 @@
+/* Navbar Styles */
 .navbar {
-    background: rgb(132,52,255);
-    background: linear-gradient(90deg, rgba(132,52,255,0.28757440476190477) 0%, rgba(150,21,240,0.2539609593837535) 27%, rgba(97,147,241,0.7805716036414566) 58%, rgba(106,230,255,1) 100%);
+    background: rgb(132, 52, 255);
+    background: linear-gradient(90deg, rgba(132, 52, 255, 0.28757440476190477) 0%, rgba(150, 21, 240, 0.2539609593837535) 27%, rgba(97, 147,241, 0.7805716036414566) 58%, rgba(106, 230, 255, 1) 100%);
     padding: 20px;
 }
 
 .navbar ul {
     list-style-type: none;
-    margin: 10;
-    padding: 10;
+    margin: 0; /* Fixed margin */
+    padding: 0; /* Fixed padding */
     display: flex;
     justify-content: space-around;
 }
 
 .navbar li {
-    display: inline;
+    display: inline; /* Keep li inline for horizontal layout */
 }
 
 .navbar a {
     color: rgb(255, 255, 255); /* Change link color */
     text-decoration: none;
     padding: 10px 15px;
-    transition: background-color 0.3s;
-    font: Arial;
+    transition: background-color 0.3s, transform 0.3s; /* Added transform transition */
+    font-family: Arial, sans-serif; /* Fixed font declaration */
     font-size: 18px;
 }
 
 .navbar a:hover {
     background-color: rgb(133, 229, 248); /* Change hover color */
+    transform: scale(1.1); /* Scale up on hover for a more subtle pop-out effect */
+    z-index: 1; /* Ensure the hovered link is on top */
 }

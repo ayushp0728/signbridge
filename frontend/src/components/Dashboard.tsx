@@ -13,6 +13,10 @@ const Dashboard: React.FC = () => {
     { label: 'Numbers', percentage: 75 },
     { label: 'Common Phrases', percentage: 40 },
   ]);
+  const username = "John Doe"; // Example username
+  const points = 1200; // Example points
+  const individualLesson = "Alphabet"; // Example current lesson
+  const partnerLesson = "Numbers"; // Example partner lesson
 
   useEffect(() => {
     const hasShownPopup = localStorage.getItem('hasShownPopup');
@@ -28,23 +32,28 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="dashboard">
- <div className="dashboard-header">
-  <h1 className="dashboard-title">Welcome to SignBridge!</h1>
-  <div className="profile-section">
-    <div className="profile-picture">
-      <img src="path/to/profile-picture.jpg" alt="User Profile" />
-      <div className="profile-text-overlay">User Profile</div>
-    </div>
-  </div>
-</div>
-
-      <p>Select a mode to get started:</p>
-      <div className="dashboard-links">
-      <button onClick={() => navigate('/learning')}>Learning</button>
-      <button onClick={() => navigate('/partner-mode')}>Partner Mode</button>
+      <div className="dashboard-header">
+        <h1 className="dashboard-title">Welcome to SignBridge, {username}!</h1>
       </div>
 
-      {/* Add the PartitionedProgressBar component */}
+      <div className="user-points">Points: {points}</div>
+
+      <div className="lesson-section">
+        <div className="lesson-card">
+          <h2>Individual Lesson</h2>
+          <p>Current Lesson: {individualLesson}</p>
+        </div>
+        <div className="lesson-card">
+          <h2>Partner Lesson</h2>
+          <p>Current Lesson: {partnerLesson}</p>
+        </div>
+      </div>
+
+      <div className="dashboard-links">
+        <button onClick={() => navigate('/learning')}>Learning</button>
+        <button onClick={() => navigate('/partner-mode')}>Partner Mode</button>
+      </div>
+
       <PartitionedProgressBar topics={topicProgress} />
 
       <Popup isOpen={isPopupOpen} onClose={handlePopupClose} />

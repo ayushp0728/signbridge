@@ -1,29 +1,31 @@
-/* Popup.css */
+/* Popup Container */
 .popup {
-    display: flex; /* Use flexbox for centering */
+    display: flex;
     justify-content: center;
     align-items: center;
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
+    position: fixed;
+    z-index: 1000;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    background-color: rgba(255, 255, 255, 0.164); /* Black w/ opacity */
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.164);
 }
 
+/* Popup Content */
 .popup-content {
     background: rgb(132,52,255);
-    background: linear-gradient(90deg, rgba(132,52,255,0.08) 0%, rgba(97,147,241,0.09) 58%, rgba(106,230,255,0.10) 100%);  
-    margin: 15% auto; /* Centered */
+    background: linear-gradient(90deg, rgba(132,52,255,0.08) 0%, rgba(97,147,241,0.09) 58%, rgba(106,230,255,0.10) 100%);
+    margin: 25% auto; /* Increased margin to push down content */
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
+    width: 80%;
     max-width: 600px;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Close Button */
 .close-btn {
     color: #aaa;
     float: right;
@@ -38,6 +40,7 @@
     cursor: pointer;
 }
 
+/* Navigation Buttons */
 .navigation {
     display: flex;
     justify-content: space-between;
