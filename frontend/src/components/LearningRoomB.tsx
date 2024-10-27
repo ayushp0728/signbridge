@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { getAuth } from "firebase/auth";
 
 const LearningRoomB: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -11,6 +12,8 @@ const LearningRoomB: React.FC = () => {
   const [apiLetter, setApiLetter] = useState<string | null>(null);
   const [hasResult, setHasResult] = useState<boolean>(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null); // State for feedback message
+  const [userUid, setUserUid] = useState<string | null>(null);
+  const [isAnswerLogged, setIsAnswerLogged] = useState<boolean>(false); // New state
 
   const parsedIndex = index !== undefined ? parseInt(index, 10) : NaN;
   const validIndex =
@@ -24,6 +27,19 @@ const LearningRoomB: React.FC = () => {
     "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3",
     "4", "5", "6", "7", "8", "9",
   ];
+
+  useEffect(() => {
+    const fetchUserUid = () => {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (user) {
+        setUserUid(user.uid);
+      } else {
+        console.error("User not authenticated.");
+      }
+    };
+    fetchUserUid();
+  }, []);
 
   const startVideo = async () => {
     try {
@@ -73,27 +89,25 @@ const LearningRoomB: React.FC = () => {
                 body: formData,
               }
             );
-
+            
             if (response.ok) {
               const jsonResponse = await response.json();
               const { letter } = jsonResponse;
               setApiLetter(letter);
               setHasResult(true);
-              console.log("Frame sent successfully!", letter);
-              
-              // Check if the API letter matches the character at validIndex
-              const isMatch = letter === characters[validIndex];
-              if (isMatch) {
-                setFeedbackMessage("Good Job!"); // Set feedback message on correct answer
 
-                // Optionally, you can send this to your API
-                await fetch("http://localhost:8000/api/log-correct-answer/${uid}", {
+              const isMatch = letter === characters[validIndex];
+              setFeedbackMessage(isMatch ? "Good Job!" : "Try Again!");
+              
+              if (isMatch && userUid && !isAnswerLogged) {
+                await fetch(`http://localhost:8000/api/log-correct-answer/${userUid}`, {
                   method: "POST",
-                  body: JSON.stringify({ letter }), // Send the correct letter
                   headers: {
                     "Content-Type": "application/json",
                   },
+                  body: JSON.stringify({ letter }),
                 });
+                setIsAnswerLogged(true); // Set logging flag to true
               } else {
                 setFeedbackMessage("Try Again!"); // Message for incorrect answer
               }
@@ -125,6 +139,7 @@ const LearningRoomB: React.FC = () => {
   const toggleWebcam = () => {
     if (isCamActive) {
       cleanup();
+      setIsAnswerLogged(false); // Reset logging flag on start
     } else {
       startVideo();
     }
