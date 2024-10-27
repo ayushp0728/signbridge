@@ -13,7 +13,7 @@ const Lobby = () => {
     const getUserAchievements = async () => {
       try {
         const response = await fetch(
-          `https://c534-128-6-37-59.ngrok-free.app/api/get-user-achievements/${user?.uid}`,
+          `https://b6cb-128-6-147-63.ngrok-free.app/api/get-user-achievements/${user?.uid}`,
           {
             method: "GET",
           }

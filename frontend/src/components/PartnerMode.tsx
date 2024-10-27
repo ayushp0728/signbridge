@@ -10,8 +10,8 @@ const PartnerMode: React.FC = () => {
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const peerConnection = useRef<RTCPeerConnection | null>(null);
   const webSocket = useRef<WebSocket | null>(null);
-  const [sentence1, setSentence1] = useState<number | null>(null);
-  const [sentence2, setSentence2] = useState<number | null>(null);
+  const sentence1 = useRef<number>(-1);
+  const sentence2 = useRef<number>(-1);
   const sentence = useRef<string>("");
   const isFirstCaller = useRef<boolean>(false);
 
@@ -36,7 +36,7 @@ const PartnerMode: React.FC = () => {
     if (roomId) {
       setIsJoined(true);
       webSocket.current = new WebSocket(
-        `wss://c534-128-6-37-59.ngrok-free.app/ws/${roomId}`
+        `wss://b6cb-128-6-147-63.ngrok-free.app/ws/${roomId}`
       );
       webSocket.current.onmessage = handleSignalingData;
       startLocalStream();
@@ -123,9 +123,9 @@ const PartnerMode: React.FC = () => {
 
       case "sentence":
         // Receive the generated sentence and display it
-        setSentence1(0);
-        setSentence2(0);
         sentence.current = data.sentence;
+        sentence1.current = -1;
+        sentence2.current = -1;
         break;
     }
   };
@@ -149,7 +149,7 @@ const PartnerMode: React.FC = () => {
 
           try {
             const response = await axios.post(
-              "https://c534-128-6-37-59.ngrok-free.app/api/upload-image/",
+              "https://b6cb-128-6-147-63.ngrok-free.app/api/upload-image/",
               formData,
               {
                 headers: { "Content-Type": "multipart/form-data" },
@@ -162,13 +162,13 @@ const PartnerMode: React.FC = () => {
               const jsonResponse = await response.data;
               const { letter } = jsonResponse;
 
-              const doneLetterCount = sentence1 ?? 0;
+              const doneLetterCount = sentence1.current;
               if (doneLetterCount < sentence.current.length) {
                 const nextLetterNeeded =
-                  sentence.current[(sentence1 ?? -1) + 1];
+                  sentence.current[sentence1.current + 1];
                 if (letter === nextLetterNeeded) {
-                  setSentence1((sentence1 ?? -1) + 1);
-                  console.log("updated gotten to:", (sentence1 ?? 0) + 1);
+                  sentence1.current = sentence1.current + 1;
+                  console.log("updated gotten to:", sentence1.current + 1);
                 }
               }
             } else {
@@ -204,7 +204,7 @@ const PartnerMode: React.FC = () => {
 
           try {
             const response = await axios.post(
-              "https://c534-128-6-37-59.ngrok-free.app/api/upload-image/",
+              "https://b6cb-128-6-147-63.ngrok-free.app/api/upload-image/",
               formData,
               {
                 headers: { "Content-Type": "multipart/form-data" },
@@ -252,9 +252,6 @@ const PartnerMode: React.FC = () => {
       setTimeout(() => {
         const generatedSentence = "Your generated sentence goes here!";
         sentence.current = generatedSentence;
-        setSentence1(-1);
-        setSentence2(-1);
-
         // Send the sentence to the other caller
         webSocket.current?.send(
           JSON.stringify({ type: "sentence", sentence: generatedSentence })
