@@ -155,7 +155,8 @@ const PartnerMode: React.FC = () => {
                 headers: { "Content-Type": "multipart/form-data" },
               }
             );
-            console.log(response.data.message); // Log the response message
+            console.log("Full sentence is:", sentence.current);
+            console.log("currently gotten:", sentence1);
 
             if (response.status === 200) {
               const jsonResponse = await response.data;
@@ -167,6 +168,7 @@ const PartnerMode: React.FC = () => {
                   sentence.current[(sentence1 ?? -1) + 1];
                 if (letter === nextLetterNeeded) {
                   setSentence1((sentence1 ?? -1) + 1);
+                  console.log("updated gotten to:", (sentence1 ?? 0) + 1);
                 }
               }
             } else {
