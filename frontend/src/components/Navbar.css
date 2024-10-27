@@ -1,7 +1,7 @@
 .navbar {
     background: rgb(132,52,255);
     background: linear-gradient(90deg, rgba(132,52,255,0.28757440476190477) 0%, rgba(150,21,240,0.2539609593837535) 27%, rgba(97,147,241,0.7805716036414566) 58%, rgba(106,230,255,1) 100%);
-    padding: 10px;
+    padding: 20px;
 }
 
 .navbar ul {
@@ -21,6 +21,8 @@
     text-decoration: none;
     padding: 10px 15px;
     transition: background-color 0.3s;
+    font: Arial;
+    font-size: 18px;
 }
 
 .navbar a:hover {

@@ -22,6 +22,9 @@ app.add_middleware(
 
 db = firestore.client()
 
+class CompletedLessonRequest(BaseModel):
+    letter: str
+
 class SignUpRequest(BaseModel):
     uid: str
     email: str
@@ -181,3 +184,22 @@ async def notify_user_count(room_id: str):
     user_count = len(rooms[room_id])
     for client in rooms[room_id]:
         await client.send_text(f'{{"type": "user_count", "count": {user_count}}}')
+
+@app.post("/api/log-correct-answer/{uid}")
+async def log_correct_answer(uid: str, completed_lesson: CompletedLessonRequest):
+    # Reference to the user document in Firestore
+    user_ref = db.collection("users").document(uid)
+
+    # Fetch the user document
+    user_doc = user_ref.get()
+    if not user_doc.exists:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Update the completed_lessons field
+    completed_lessons = user_doc.to_dict().get("completed_lessons", [])
+    completed_lessons.append(completed_lesson.letter)  # Append the new letter
+
+    # Update the document in Firestore
+    user_ref.update({"completed_lessons": completed_lessons})
+
+    return {"status": "success", "message": "Logged successfully", "completed_lessons": completed_lessons}
