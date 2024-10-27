@@ -28,7 +28,7 @@ const PartnerMode: React.FC = () => {
   const joinRoom = () => {
     if (roomId) {
       setIsJoined(true);
-      webSocket.current = new WebSocket(`ws://localhost:8000/ws/${roomId}`);
+      webSocket.current = new WebSocket(`ws://10.74.132.230:8000/ws/${roomId}`);
       webSocket.current.onmessage = handleSignalingData;
       startLocalStream();
     }
@@ -65,7 +65,9 @@ const PartnerMode: React.FC = () => {
 
     peerConnection.current.onicecandidate = (event) => {
       if (event.candidate && webSocket.current) {
-        webSocket.current.send(JSON.stringify({ type: "candidate", candidate: event.candidate }));
+        webSocket.current.send(
+          JSON.stringify({ type: "candidate", candidate: event.candidate })
+        );
       }
     };
   };
@@ -80,17 +82,23 @@ const PartnerMode: React.FC = () => {
 
     switch (data.type) {
       case "offer":
-        await peerConnection.current?.setRemoteDescription(new RTCSessionDescription(data.offer));
+        await peerConnection.current?.setRemoteDescription(
+          new RTCSessionDescription(data.offer)
+        );
         const answer = await peerConnection.current?.createAnswer();
         await peerConnection.current?.setLocalDescription(answer);
         webSocket.current?.send(JSON.stringify({ type: "answer", answer }));
         break;
       case "answer":
-        await peerConnection.current?.setRemoteDescription(new RTCSessionDescription(data.answer));
+        await peerConnection.current?.setRemoteDescription(
+          new RTCSessionDescription(data.answer)
+        );
         break;
       case "candidate":
         if (data.candidate) {
-          await peerConnection.current?.addIceCandidate(new RTCIceCandidate(data.candidate));
+          await peerConnection.current?.addIceCandidate(
+            new RTCIceCandidate(data.candidate)
+          );
         }
         break;
     }
@@ -113,9 +121,13 @@ const PartnerMode: React.FC = () => {
           formData.append("file", blob, "frame.jpg");
 
           try {
-            const response = await axios.post("http://localhost:8000/api/upload-image/", formData, {
-              headers: { "Content-Type": "multipart/form-data" },
-            });
+            const response = await axios.post(
+              "http://10.74.132.230:8000/api/upload-image/",
+              formData,
+              {
+                headers: { "Content-Type": "multipart/form-data" },
+              }
+            );
             console.log(response.data.message); // Log the response message
           } catch (error) {
             console.error("Error uploading frame:", error);
@@ -146,23 +158,64 @@ const PartnerMode: React.FC = () => {
   return (
     <div className="video-container">
       {!isJoined ? (
-        <div className="join-room">
+        <div className="border border-violet-200 flex flex-col items-center p-6 bg-pastel-light-yellow rounded-lg shadow-xl">
+          <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+            Join a Room
+          </h2>
           <input
             type="text"
             placeholder="Enter Room ID"
             value={roomId}
             onChange={handleRoomIdChange}
+            className="w-64 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pastel-light-blue mb-4 text-center"
           />
-          <button onClick={joinRoom}>Join Room</button>
+          <button
+            onClick={joinRoom}
+            className={`w-full px-6 py-3 rounded-lg font-semibold transition text-white`}
+          >
+            Join Room
+          </button>
         </div>
       ) : (
         <>
-          <div className="user-count">Users in Room: {userCount}</div>
-          <video ref={localVideoRef} autoPlay playsInline muted className="local-video" />
-          <video ref={remoteVideoRef} autoPlay playsInline className="remote-video" />
-          <div className="button-container">
-            <button onClick={createOffer} className="connect-button">Start Call</button>
-            <button onClick={endCall} className="end-call-button">End Call</button>
+          <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+            {/* User Count */}
+            <div className="user-count text-2xl mb-6 font-semibold text-gray-700">
+              Users in Room: {userCount}
+            </div>
+
+            {/* Video Container */}
+            <div className="flex space-x-6 items-center justify-center mb-8">
+              <video
+                ref={localVideoRef}
+                autoPlay
+                playsInline
+                muted
+                className="w-[500px] h-[300px] bg-gray-800 rounded-lg object-cover transform -scale-x-100" // Fixed size and unmirrored
+              />
+              <video
+                ref={remoteVideoRef}
+                autoPlay
+                playsInline
+                className="w-[500px] h-[300px] bg-gray-800 rounded-lg object-cover" // Fixed size and unmirrored
+              />
+            </div>
+
+            {/* Button Container */}
+            <div className="button-container flex space-x-6">
+              <button
+                onClick={createOffer}
+                className="px-6 py-3 w-[200px] bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-lg"
+              >
+                Start Call
+              </button>
+              <button
+                onClick={endCall}
+                className="px-6 py-3 w-[200px] bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold text-lg"
+              >
+                End Call
+              </button>
+            </div>
           </div>
         </>
       )}

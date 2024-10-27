@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
 const LearningRoomB: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -11,6 +12,10 @@ const LearningRoomB: React.FC = () => {
   const [apiLetter, setApiLetter] = useState<string | null>(null);
   const [hasResult, setHasResult] = useState<boolean>(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null); // State for feedback message
+  const [isAnswerLogged, setIsAnswerLogged] = useState<boolean>(false); // New state
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const { user } = useAuth();
 
   const parsedIndex = index !== undefined ? parseInt(index, 10) : NaN;
   const validIndex =
@@ -19,10 +24,42 @@ const LearningRoomB: React.FC = () => {
       : 0;
 
   const characters = [
-    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
-    "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
-    "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3",
-    "4", "5", "6", "7", "8", "9",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
   ];
 
   const startVideo = async () => {
@@ -48,7 +85,10 @@ const LearningRoomB: React.FC = () => {
   };
 
   const captureAndSendFrame = () => {
-    if (!videoRef.current || !canvasRef.current) return;
+    // Skip capture if processing a previous frame
+    if (isProcessing || !videoRef.current || !canvasRef.current) return;
+
+    setIsProcessing(true); // Set processing to true at the start
 
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -79,35 +119,43 @@ const LearningRoomB: React.FC = () => {
               const { letter } = jsonResponse;
               setApiLetter(letter);
               setHasResult(true);
-              console.log("Frame sent successfully!", letter);
-              
-              // Check if the API letter matches the character at validIndex
-              const isMatch = letter === characters[validIndex];
-              if (isMatch) {
-                setFeedbackMessage("Good Job!"); // Set feedback message on correct answer
 
-                // Optionally, you can send this to your API
-                await fetch("http://localhost:8000/api/log-correct-answer/${uid}", {
-                  method: "POST",
-                  body: JSON.stringify({ letter }), // Send the correct letter
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                });
+              const isMatch = letter === characters[validIndex];
+              setFeedbackMessage(isMatch ? "Good Job!" : "Try Again!");
+
+              if (isMatch && user?.uid && !isAnswerLogged) {
+                await fetch(
+                  `http://localhost:8000/api/log-correct-answer/${user?.uid}`,
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ letter }),
+                  }
+                );
+                setIsAnswerLogged(true);
               } else {
-                setFeedbackMessage("Try Again!"); // Message for incorrect answer
+                setFeedbackMessage("Try Again!");
               }
             } else {
               console.error("Error sending frame:", response.statusText);
             }
           } catch (error) {
             console.error("Error sending frame:", error);
+          } finally {
+            // Reset processing flag after API response completes
+            setIsProcessing(false);
           }
+        } else {
+          setIsProcessing(false); // Reset in case of no blob
         }
       }, "image/jpeg");
+    } else {
+      setIsProcessing(false); // Reset in case of no context
     }
   };
-
+  
   const cleanup = () => {
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
@@ -125,6 +173,7 @@ const LearningRoomB: React.FC = () => {
   const toggleWebcam = () => {
     if (isCamActive) {
       cleanup();
+      setIsAnswerLogged(false); // Reset logging flag on start
     } else {
       startVideo();
     }
@@ -173,7 +222,7 @@ const LearningRoomB: React.FC = () => {
           {isCamActive ? "Stop Webcam" : "Start Webcam"}
         </button>
         <canvas ref={canvasRef} style={{ display: "none" }} />
-        
+
         {/* Feedback Message Popup */}
         {feedbackMessage && (
           <div className="mt-4 p-4 bg-green-200 text-green-800 rounded-md shadow-md">
