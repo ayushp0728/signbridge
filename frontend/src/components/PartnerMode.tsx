@@ -28,7 +28,7 @@ const PartnerMode: React.FC = () => {
   const joinRoom = () => {
     if (roomId) {
       setIsJoined(true);
-      webSocket.current = new WebSocket(`ws://10.74.132.230:8000/ws/${roomId}`);
+      webSocket.current = new WebSocket(`wss://8557-128-6-37-59.ngrok-free.app/ws/${roomId}`);
       webSocket.current.onmessage = handleSignalingData;
       startLocalStream();
     }
@@ -38,7 +38,7 @@ const PartnerMode: React.FC = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: true,
+        audio: false,
       });
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = stream;
@@ -122,7 +122,7 @@ const PartnerMode: React.FC = () => {
 
           try {
             const response = await axios.post(
-              "http://10.74.132.230:8000/api/upload-image/",
+              "https://8557-128-6-37-59.ngrok-free.app:8000/api/upload-image/",
               formData,
               {
                 headers: { "Content-Type": "multipart/form-data" },
@@ -197,6 +197,7 @@ const PartnerMode: React.FC = () => {
                 ref={remoteVideoRef}
                 autoPlay
                 playsInline
+                muted
                 className="w-[500px] h-[300px] bg-gray-800 rounded-lg object-cover" // Fixed size and unmirrored
               />
             </div>

@@ -12,6 +12,7 @@ const Friends: React.FC = () => {
     const [currentUserUid, setCurrentUserUid] = useState<string | null>(null);
     const [displayFriendId, setDisplayFriendId] = useState<string | null>(null);
     const [userNames, setUserNames] = useState<{ [uid: string]: string }>({}); // Store user names
+    
 
     useEffect(() => {
         const fetchCurrentUserId = async () => {
@@ -41,15 +42,15 @@ const Friends: React.FC = () => {
             if (!currentUserUid) return;
 
             try {
-                const requestsResponse = await fetch(`http://172.31.153.81:8000/api/get_incoming_requests/${currentUserUid}`);
+                const requestsResponse = await fetch(`https://8557-128-6-37-59.ngrok-free.app:8000/api/get_incoming_requests/${currentUserUid}`);
                 const requestsData = await requestsResponse.json();
                 setIncomingRequests(requestsData);
 
-                const sentResponse = await fetch(`http://172.31.153.81:8000/api/get_sent_requests/${currentUserUid}`);
+                const sentResponse = await fetch(`https://8557-128-6-37-59.ngrok-free.app:8000/api/get_sent_requests/${currentUserUid}`);
                 const sentData = await sentResponse.json();
                 setSentRequests(sentData);
 
-                const friendsResponse = await fetch(`http://172.31.153.81:8000/api/get_friends/${currentUserUid}`);
+                const friendsResponse = await fetch(`https://8557-128-6-37-59.ngrok-free.app:8000/api/get_friends/${currentUserUid}`);
                 const friendsData = await friendsResponse.json();
                 setFriends(friendsData);
 
@@ -81,7 +82,7 @@ const Friends: React.FC = () => {
         if (!friendId) return;
 
         try {
-            const response = await fetch('http://172.31.153.81:8000/api/send_friend_request/', {
+            const response = await fetch('https://8557-128-6-37-59.ngrok-free.app:8000/api/send_friend_request/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -105,7 +106,7 @@ const Friends: React.FC = () => {
 
     const handleAcceptRequest = async (requestingUid: string) => {
         try {
-            const response = await fetch('http://172.31.153.81:8000/api/accept_friend_request/', {
+            const response = await fetch('https://8557-128-6-37-59.ngrok-free.app:8000/api/accept_friend_request/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -129,7 +130,7 @@ const Friends: React.FC = () => {
 
     const handleDeclineRequest = async (requestingUid: string) => {
         try {
-            const response = await fetch('http://172.31.153.81:8000/api/decline_friend_request/', {
+            const response = await fetch('https://8557-128-6-37-59.ngrok-free.app:8000/api/decline_friend_request/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // Add useNavigate
 import { useAuth } from "./AuthContext";
 
 const LearningRoomB: React.FC = () => {
@@ -11,11 +11,12 @@ const LearningRoomB: React.FC = () => {
   const { index } = useParams<{ index: string }>();
   const [apiLetter, setApiLetter] = useState<string | null>(null);
   const [hasResult, setHasResult] = useState<boolean>(false);
-  const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null); // State for feedback message
-  const [isAnswerLogged, setIsAnswerLogged] = useState<boolean>(false); // New state
+  const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [isAnswerLogged, setIsAnswerLogged] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const { user } = useAuth();
+  const navigate = useNavigate(); // Initialize navigate
 
   const parsedIndex = index !== undefined ? parseInt(index, 10) : NaN;
   const validIndex =
@@ -24,43 +25,24 @@ const LearningRoomB: React.FC = () => {
       : 0;
 
   const characters = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    "Y",
-    "Z",
-    "0",
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
+    "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+    "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3",
+    "4", "5", "6", "7", "8", "9"
   ];
+
+  // Handle navigation to next or previous character
+  const goToPrevious = () => {
+    if (validIndex > 0) {
+      navigate(`/learning/${validIndex - 1}`);
+    }
+  };
+
+  const goToNext = () => {
+    if (validIndex < characters.length - 1) {
+      navigate(`/learning/${validIndex + 1}`);
+    }
+  };
 
   const startVideo = async () => {
     try {
@@ -107,7 +89,7 @@ const LearningRoomB: React.FC = () => {
 
           try {
             const response = await fetch(
-              "http://localhost:8000/api/upload-image/",
+              "https://8557-128-6-37-59.ngrok-free.app/api/upload-image/",
               {
                 method: "POST",
                 body: formData,
@@ -125,7 +107,7 @@ const LearningRoomB: React.FC = () => {
 
               if (isMatch && user?.uid && !isAnswerLogged) {
                 await fetch(
-                  `http://localhost:8000/api/log-correct-answer/${user?.uid}`,
+                  `https://8557-128-6-37-59.ngrok-free.app/api/log-correct-answer/${user?.uid}`,
                   {
                     method: "POST",
                     headers: {
@@ -195,8 +177,7 @@ const LearningRoomB: React.FC = () => {
       </div>
 
       <div className="flex-1 flex items-center justify-center flex-col">
-        <div
-          className={`overflow-hidden rounded-lg w-3/4 h-3/5 max-w-2xl max-h-[70vh] mb-4 ${
+        <div className={`overflow-hidden rounded-lg w-3/4 h-3/5 max-w-2xl max-h-[70vh] mb-4 ${
             !isCamActive
               ? "bg-gray-300 shadow-none"
               : hasResult
@@ -229,6 +210,28 @@ const LearningRoomB: React.FC = () => {
             {feedbackMessage}
           </div>
         )}
+
+        {/* Navigation Arrows */}
+        <div className="flex space-x-4 mt-6">
+          <button
+            onClick={goToPrevious}
+            disabled={validIndex === 0}
+            className={`px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition font-semibold ${
+              validIndex === 0 ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            Previous
+          </button>
+          <button
+            onClick={goToNext}
+            disabled={validIndex === characters.length - 1}
+            className={`px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition font-semibold ${
+              validIndex === characters.length - 1 ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

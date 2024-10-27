@@ -50,14 +50,7 @@ const Dashboard: React.FC<DashboardProps> = ({ points, userName }) => {
         <h1 className="dashboard-title">Welcome to SignBridge, {userName}!</h1>
       </div>
 
-      <div className="progress-bar">
-        <div
-          className="progress-fill"
-          style={{ width: `${percentage}%` }} // Use percentage state for width
-        />
-      </div>
-      <p>{Number(points)} / {MAX_POINTS} Points</p>
-
+      
       <div className="lesson-section">
         <div className="lesson-card">
           <h2>Individual Lesson</h2>
@@ -75,6 +68,15 @@ const Dashboard: React.FC<DashboardProps> = ({ points, userName }) => {
       </div>
 
       <PartitionedProgressBar topics={topicProgress} />
+      <h2>  </h2>
+
+      <div className="progress-bar">
+        <div
+          className="progress-fill"
+          style={{ width: `${percentage}%` }} // Use percentage state for width
+        />
+      </div>
+      <p>{Number(points)} / {MAX_POINTS} Points</p>
 
       <Popup isOpen={isPopupOpen} onClose={handlePopupClose} />
     </div>

@@ -44,7 +44,7 @@ const SignIn: React.FC = () => {
       console.log('User signed up:', userCredential.user);
 
       // Send user data to FastAPI backend
-      const response = await fetch('http://localhost:8000/api/database/', { // FastAPI endpoint with trailing slash
+      const response = await fetch('https://8557-128-6-37-59.ngrok-free.app/api/database/', { // FastAPI endpoint with trailing slash
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
