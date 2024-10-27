@@ -31,7 +31,7 @@ const PartnerMode: React.FC = () => {
   const joinRoom = () => {
     if (roomId) {
       setIsJoined(true);
-      webSocket.current = new WebSocket(`wss://8557-128-6-37-59.ngrok-free.app/ws/${roomId}`);
+      webSocket.current = new WebSocket(`wss://c534-128-6-37-59.ngrok-free.app/ws/${roomId}`);
       webSocket.current.onmessage = handleSignalingData;
       startLocalStream();
     }
@@ -133,7 +133,7 @@ const PartnerMode: React.FC = () => {
 
           try {
             const response = await axios.post(
-              "https://8557-128-6-37-59.ngrok-free.app/api/upload-image/",
+              "https://c534-128-6-37-59.ngrok-free.app/api/upload-image/",
               formData,
               {
                 headers: { "Content-Type": "multipart/form-data" },
@@ -167,7 +167,7 @@ const PartnerMode: React.FC = () => {
 
           try {
             const response = await axios.post(
-              "https://8557-128-6-37-59.ngrok-free.app/api/upload-image/",
+              "https://c534-128-6-37-59.ngrok-free.app/api/upload-image/",
               formData,
               {
                 headers: { "Content-Type": "multipart/form-data" },

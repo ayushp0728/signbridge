@@ -89,7 +89,7 @@ const LearningRoomB: React.FC = () => {
 
           try {
             const response = await fetch(
-              "https://8557-128-6-37-59.ngrok-free.app/api/upload-image/",
+              "https://c534-128-6-37-59.ngrok-free.app/api/upload-image/",
               {
                 method: "POST",
                 body: formData,
@@ -107,7 +107,7 @@ const LearningRoomB: React.FC = () => {
 
               if (isMatch && user?.uid && !isAnswerLogged) {
                 await fetch(
-                  `https://8557-128-6-37-59.ngrok-free.app/api/log-correct-answer/${user?.uid}`,
+                  `https://c534-128-6-37-59.ngrok-free.app/api/log-correct-answer/${user?.uid}`,
                   {
                     method: "POST",
                     headers: {
