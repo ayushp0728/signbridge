@@ -11,7 +11,7 @@ import Learning from "./components/Learning";
 import Navbar from "./components/Navbar";
 import SignIn from "./components/SignIn";
 import LearningRoom from "./components/LearningRoom";
-import Lobby from "./components/Lobby";
+import Lobby from "./components/Lobby2";
 import { useAuth } from "./components/AuthContext";
 import Profile from "./components/Profile";
 import Friends from "./components/Friends"
