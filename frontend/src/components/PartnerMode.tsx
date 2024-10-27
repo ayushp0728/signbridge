@@ -14,7 +14,10 @@ const PartnerMode: React.FC = () => {
   useEffect(() => {
     let captureInterval: NodeJS.Timeout;
     if (isJoined) {
-      captureInterval = setInterval(captureAndSendFrame, 3000);
+      captureInterval = setInterval(() => {
+        captureAndSendLocalFrame(); // Capture local frame
+        captureAndSendRemoteFrame(); // Capture remote frame
+      }, 3000);
     }
     return () => {
       clearInterval(captureInterval);
@@ -74,37 +77,45 @@ const PartnerMode: React.FC = () => {
 
   const handleSignalingData = async (event: MessageEvent) => {
     const data = JSON.parse(event.data);
-
+  
     if (data.type === "user_count") {
       setUserCount(data.count);
       return;
     }
-
+  
     switch (data.type) {
       case "offer":
-        await peerConnection.current?.setRemoteDescription(
-          new RTCSessionDescription(data.offer)
-        );
-        const answer = await peerConnection.current?.createAnswer();
-        await peerConnection.current?.setLocalDescription(answer);
-        webSocket.current?.send(JSON.stringify({ type: "answer", answer }));
+        if (peerConnection.current) {
+          await peerConnection.current.setRemoteDescription(
+            new RTCSessionDescription(data.offer)
+          );
+  
+          const answer = await peerConnection.current.createAnswer();
+          await peerConnection.current.setLocalDescription(answer);
+  
+          // Send the answer back to the signaling server
+          webSocket.current?.send(JSON.stringify({ type: "answer", answer }));
+        }
         break;
       case "answer":
-        await peerConnection.current?.setRemoteDescription(
-          new RTCSessionDescription(data.answer)
-        );
+        if (peerConnection.current) {
+          await peerConnection.current.setRemoteDescription(
+            new RTCSessionDescription(data.answer)
+          );
+        }
         break;
       case "candidate":
-        if (data.candidate) {
-          await peerConnection.current?.addIceCandidate(
+        if (data.candidate && peerConnection.current) {
+          await peerConnection.current.addIceCandidate(
             new RTCIceCandidate(data.candidate)
           );
         }
         break;
     }
   };
-
-  const captureAndSendFrame = async () => {
+  
+  // Function to capture and send local video frame
+  const captureAndSendLocalFrame = async () => {
     if (!localVideoRef.current) return;
 
     const canvas = document.createElement("canvas");
@@ -118,11 +129,11 @@ const PartnerMode: React.FC = () => {
       canvas.toBlob(async (blob) => {
         if (blob) {
           const formData = new FormData();
-          formData.append("file", blob, "frame.jpg");
+          formData.append("file", blob, "local_frame.jpg"); // Differentiated file name
 
           try {
             const response = await axios.post(
-              "https://8557-128-6-37-59.ngrok-free.app:8000/api/upload-image/",
+              "https://8557-128-6-37-59.ngrok-free.app/api/upload-image/",
               formData,
               {
                 headers: { "Content-Type": "multipart/form-data" },
@@ -130,7 +141,41 @@ const PartnerMode: React.FC = () => {
             );
             console.log(response.data.message); // Log the response message
           } catch (error) {
-            console.error("Error uploading frame:", error);
+            console.error("Error uploading local frame:", error);
+          }
+        }
+      }, "image/jpeg");
+    }
+  };
+
+  // Function to capture and send remote video frame
+  const captureAndSendRemoteFrame = async () => {
+    if (!remoteVideoRef.current) return;
+
+    const canvas = document.createElement("canvas");
+    const video = remoteVideoRef.current;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext("2d");
+
+    if (context) {
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(async (blob) => {
+        if (blob) {
+          const formData = new FormData();
+          formData.append("file", blob, "remote_frame.jpg"); // Differentiated file name
+
+          try {
+            const response = await axios.post(
+              "https://8557-128-6-37-59.ngrok-free.app/api/upload-image/",
+              formData,
+              {
+                headers: { "Content-Type": "multipart/form-data" },
+              }
+            );
+            console.log(response.data.message); // Log the response message
+          } catch (error) {
+            console.error("Error uploading remote frame:", error);
           }
         }
       }, "image/jpeg");
@@ -138,10 +183,15 @@ const PartnerMode: React.FC = () => {
   };
 
   const createOffer = async () => {
-    const offer = await peerConnection.current?.createOffer();
-    await peerConnection.current?.setLocalDescription(offer);
+    if (!peerConnection.current) return;
+  
+    const offer = await peerConnection.current.createOffer();
+    await peerConnection.current.setLocalDescription(offer);
+  
+    // Send the offer to the signaling server
     webSocket.current?.send(JSON.stringify({ type: "offer", offer }));
   };
+  
 
   const endCall = () => {
     peerConnection.current?.close();
