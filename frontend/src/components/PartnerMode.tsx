@@ -14,6 +14,7 @@ const PartnerMode: React.FC = () => {
   const sentence2 = useRef<number>(-1);
   const sentence = useRef<string>("");
   const isFirstCaller = useRef<boolean>(false);
+  const [useless, setUseless] = useState<boolean>(false);
 
   useEffect(() => {
     let captureInterval: NodeJS.Timeout;
@@ -164,13 +165,15 @@ const PartnerMode: React.FC = () => {
 
               const doneLetterCount = sentence1.current;
               if (doneLetterCount < sentence.current.length) {
-                const nextLetterNeeded =
-                  sentence.current[sentence1.current + 1];
+                // Get the next letter needed
+                const nextLetterNeeded = sentence.current[sentence1.current];
                 if (letter === nextLetterNeeded) {
-                  sentence1.current = sentence1.current + 1;
-                  console.log("updated gotten to:", sentence1.current + 1);
+                  // Update sentence1 count since we found the next letter
+                  sentence1.current += 1;
+                  console.log("Updated letter count to:", sentence1.current);
                 }
               }
+              setUseless((prev) => !prev);
             } else {
               console.error(
                 "Error in getting user1 progress:",
@@ -216,17 +219,21 @@ const PartnerMode: React.FC = () => {
               const jsonResponse = await response.data;
               const { letter } = jsonResponse;
 
-              const doneLetterCount = sentence2 ?? 0;
+              const doneLetterCount = sentence2.current;
               if (doneLetterCount < sentence.current.length) {
-                const nextLetterNeeded =
-                  sentence.current[(sentence2 ?? -1) + 1];
+                // Get the next letter needed
+                const nextLetterNeeded = sentence.current[sentence2.current];
                 if (letter === nextLetterNeeded) {
-                  setSentence1((sentence2 ?? -1) + 1);
+                  // Update sentence2 count since we found the next letter
+                  sentence2.current += 1;
+                  console.log("Updated letter count to:", sentence2.current);
                 }
               }
+
+              setUseless((prev) => !prev);
             } else {
               console.error(
-                "Error in getting user1 progress:",
+                "Error in getting user2 progress:",
                 response.statusText
               );
             }
@@ -301,6 +308,10 @@ const PartnerMode: React.FC = () => {
               Users in Room: {userCount}
             </div>
 
+            <h1>Sentence: {sentence.current}</h1>
+            <h1>User 1: {sentence1.current}</h1>
+            <h1>User 2: {sentence2.current}</h1>
+            
             {/* Video Container */}
             <div className="flex space-x-6 items-center justify-center mb-8">
               <video
