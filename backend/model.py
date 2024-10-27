@@ -10,6 +10,14 @@ import os
 
 warnings.filterwarnings('ignore', category=UserWarning, module="google")
 
+def calculate_angle(a, b, c):
+    ab = np.array([a[0] - b[0], a[1] - b[1]])
+    bc = np.array([c[0] - b[0], c[1] - b[1]])
+    cosine_angle = np.dot(ab, bc) / (np.linalg.norm(ab) * np.linalg.norm(bc))
+    angle = np.arccos(cosine_angle)
+    return np.degrees(angle)
+
+
 def model_pipeline(file: UploadFile):
     print("1")
     mp_hands = mp.solutions.hands
@@ -60,10 +68,20 @@ def model_pipeline(file: UploadFile):
 
     print("5")
     
+    thumb_tip = [hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].x,
+                         hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].y]
+    pinky_tip = [hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP].x,
+                         hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP].y]
+    pinky_mcp = [hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_MCP].x,
+                         hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_MCP].y]
+
+    angle_thumb_pinky = calculate_angle(thumb_tip, pinky_tip, pinky_mcp) / 180.0
+    data_aux.append(angle_thumb_pinky)
+    
     try:
         if not data_aux:
             raise ValueError("No hand landmarks detected.")
-
+        
         flattened_data = np.array(data_aux).reshape(1, -1)
         print("Flattened landmarks for the image:", flattened_data)
         print("Shape of flattened_data:", flattened_data.shape)
