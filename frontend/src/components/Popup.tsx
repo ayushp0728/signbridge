@@ -1,30 +1,35 @@
 // Popup.tsx
 import React, { useState } from 'react';
-import './Popup.css'; // Import the CSS file for styles (optional)
+import './Popup.css';
 
 interface Slide {
     title: string;
-    content: string;
+    content: string | React.ReactNode;
 }
 
 const slides: Slide[] = [
     {
-        title: "Welcome to Our Dashboard!",
-        content: "You are currently on: Your Website Name",
+        title: "Welcome to SignBridge!",
+        content: "We are an American Sign Language learning website that helps people learn sign language in an easy and understandable manner. Please click the next button to continue!",
     },
     {
         title: "Purpose",
-        content: "This website is designed to help you manage your schedule effectively.",
+        content: "Our website aims to provide an engaging and accessible platform for learning American Sign Language, empowering individuals to communicate effectively and connect with the Deaf community!",
     },
     {
         title: "Modes",
-        content: "Here are the modes available:",
+        content: (
+            <>
+                Learning: Master the fundamentals of sign language in Learning Mode!
+                <br />
+                Partner: Challenge your friends in Partner Mode to sharpen your sign language skills while learning! 
+            </>
+        ),
     },
     {
-        title: "View Mode",
-        content: "See your current schedule.",
+        title: "View Current Page",
+        content: "To check your current page, simply look at the popup bar at the top of the screen!",
     },
-
 ];
 
 interface PopupProps {
