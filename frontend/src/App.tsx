@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -16,9 +16,31 @@ import { useAuth } from "./components/AuthContext";
 import Profile from "./components/Profile";
 import Friends from "./components/Friends";
 import LearningRoomB from "./components/LearningRoomB";
+import { getAuth } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import './global.css';
 
 const App: React.FC = () => {
   const { user, loading } = useAuth();
+  const [points, setPoints] = useState<string>('0'); // State to store user points
+
+  useEffect(() => {
+    const fetchUserPoints = async () => {
+      if (user) {
+        const auth = getAuth();
+        const db = getFirestore();
+        const userDocRef = doc(db, "users", user.uid); // Assuming `user.uid` exists
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const { points } = userDoc.data();
+          setPoints(points || '0'); // Set points from Firestore or fallback to '0'
+        }
+      }
+    };
+
+    fetchUserPoints();
+  }, [user]); // Fetch points when the user changes
 
   if (loading) {
     return <div>Loading...</div>; // You can show a loading spinner here
@@ -31,7 +53,7 @@ const App: React.FC = () => {
         <Routes>
           <Route
             path="/"
-            element={user ? <Dashboard /> : <Navigate to="/signin" />}
+            element={user ? <Dashboard points={points} /> : <Navigate to="/signin" />}
           />
           <Route
             path="/partner-mode"
@@ -45,7 +67,7 @@ const App: React.FC = () => {
 
           <Route
             path="/profile"
-            element={user ? <Profile /> : <Navigate to="/profile" />}
+            element={user ? <Profile /> : <Navigate to="/signin" />}
           />
           <Route
             path="/lobby"

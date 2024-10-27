@@ -5,7 +5,11 @@ import './Dashboard.css';
 import Popup from './Popup';
 import PartitionedProgressBar from './PartitionedProgressBar';
 
-const Dashboard: React.FC = () => {
+interface DashboardProps {
+  points: string; // Accept points as a prop
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ points }) => {
   const navigate = useNavigate();
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [topicProgress, setTopicProgress] = useState([
@@ -14,7 +18,6 @@ const Dashboard: React.FC = () => {
     { label: 'Common Phrases', percentage: 40 },
   ]);
   const username = "John Doe"; // Example username
-  const points = 1200; // Example points
   const individualLesson = "Alphabet"; // Example current lesson
   const partnerLesson = "Numbers"; // Example partner lesson
 
@@ -36,7 +39,7 @@ const Dashboard: React.FC = () => {
         <h1 className="dashboard-title">Welcome to SignBridge, {username}!</h1>
       </div>
 
-      <div className="user-points">Points: {points}</div>
+      <div className="user-points">Points: {points}</div> {/* Use points from props */}
 
       <div className="lesson-section">
         <div className="lesson-card">
