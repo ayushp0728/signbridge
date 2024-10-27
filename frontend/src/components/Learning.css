@@ -1,0 +1,55 @@
+/* General Styles */
+.learning-container {
+    padding: 20px;
+}
+
+.learning-title {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.learning-description {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+/* List Structure Styles */
+.learning-tree {
+    margin-top: 20px;
+}
+
+.tree {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0; /* Remove default padding */
+}
+
+.tree li {
+    margin: 10px 0; /* Space between items */
+    text-align: center; /* Center align items */
+}
+
+/* Styles for Basics node */
+.step {
+    font-weight: bold;
+    padding: 10px;
+    background-color: #4caf50; /* Green color */
+    color: white;
+    border-radius: 5px;
+    width: 150px;
+    display: inline-block; /* Allow margin to work properly */
+}
+
+/* Sub-nodes Styles */
+.sub-node {
+    padding: 8px;
+    background-color: #e0e0e0; /* Light grey color */
+    border-radius: 5px;
+    margin-top: 5px; /* Space above sub-nodes */
+    transition: transform 0.2s;
+}
+
+/* Sub-node hover effect */
+.sub-node:hover {
+    transform: scale(1.1);
+    background-color: #d1d1d1; /* Darker grey on hover */
+}
