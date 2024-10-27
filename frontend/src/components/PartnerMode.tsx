@@ -10,19 +10,10 @@ const PartnerMode: React.FC = () => {
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const peerConnection = useRef<RTCPeerConnection | null>(null);
   const webSocket = useRef<WebSocket | null>(null);
-
-  useEffect(() => {
-    let captureInterval: NodeJS.Timeout;
-    if (isJoined) {
-      captureInterval = setInterval(() => {
-        captureAndSendLocalFrame(); // Capture local frame
-        captureAndSendRemoteFrame(); // Capture remote frame
-      }, 3000);
-    }
-    return () => {
-      clearInterval(captureInterval);
-    };
-  }, [isJoined]);
+  const [sentence1, setSentence1] = useState<number | null>(null);
+  const [sentence2, setSentence2] = useState<number | null>(null);
+  const sentence = useRef<string>("");
+  const isFirstCaller = useRef<boolean>(false);
 
   const handleRoomIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRoomId(e.target.value);
@@ -31,9 +22,14 @@ const PartnerMode: React.FC = () => {
   const joinRoom = () => {
     if (roomId) {
       setIsJoined(true);
-      webSocket.current = new WebSocket(`wss://8557-128-6-37-59.ngrok-free.app/ws/${roomId}`);
+      webSocket.current = new WebSocket(
+        `wss://8557-128-6-37-59.ngrok-free.app/ws/${roomId}`
+      );
       webSocket.current.onmessage = handleSignalingData;
       startLocalStream();
+
+      // Set the first caller flag when joining
+      isFirstCaller.current = true;
     }
   };
 
@@ -77,22 +73,22 @@ const PartnerMode: React.FC = () => {
 
   const handleSignalingData = async (event: MessageEvent) => {
     const data = JSON.parse(event.data);
-  
+
     if (data.type === "user_count") {
       setUserCount(data.count);
       return;
     }
-  
+
     switch (data.type) {
       case "offer":
         if (peerConnection.current) {
           await peerConnection.current.setRemoteDescription(
             new RTCSessionDescription(data.offer)
           );
-  
+
           const answer = await peerConnection.current.createAnswer();
           await peerConnection.current.setLocalDescription(answer);
-  
+
           // Send the answer back to the signaling server
           webSocket.current?.send(JSON.stringify({ type: "answer", answer }));
         }
@@ -111,9 +107,16 @@ const PartnerMode: React.FC = () => {
           );
         }
         break;
+
+      case "sentence":
+        // Receive the generated sentence and display it
+        setSentence1(0);
+        setSentence2(0);
+        sentence.current = data.sentence;
+        break;
     }
   };
-  
+
   // Function to capture and send local video frame
   const captureAndSendLocalFrame = async () => {
     if (!localVideoRef.current) return;
@@ -140,6 +143,25 @@ const PartnerMode: React.FC = () => {
               }
             );
             console.log(response.data.message); // Log the response message
+
+            if (response.status === 200) {
+              const jsonResponse = await response.data;
+              const { letter } = jsonResponse;
+
+              const doneLetterCount = sentence1 ?? 0;
+              if (doneLetterCount < sentence.current.length) {
+                const nextLetterNeeded =
+                  sentence.current[(sentence1 ?? -1) + 1];
+                if (letter === nextLetterNeeded) {
+                  setSentence1((sentence1 ?? -1) + 1);
+                }
+              }
+            } else {
+              console.error(
+                "Error in getting user1 progress:",
+                response.statusText
+              );
+            }
           } catch (error) {
             console.error("Error uploading local frame:", error);
           }
@@ -174,6 +196,25 @@ const PartnerMode: React.FC = () => {
               }
             );
             console.log(response.data.message); // Log the response message
+
+            if (response.status === 200) {
+              const jsonResponse = await response.data;
+              const { letter } = jsonResponse;
+
+              const doneLetterCount = sentence2 ?? 0;
+              if (doneLetterCount < sentence.current.length) {
+                const nextLetterNeeded =
+                  sentence.current[(sentence2 ?? -1) + 1];
+                if (letter === nextLetterNeeded) {
+                  setSentence1((sentence2 ?? -1) + 1);
+                }
+              }
+            } else {
+              console.error(
+                "Error in getting user1 progress:",
+                response.statusText
+              );
+            }
           } catch (error) {
             console.error("Error uploading remote frame:", error);
           }
@@ -184,14 +225,28 @@ const PartnerMode: React.FC = () => {
 
   const createOffer = async () => {
     if (!peerConnection.current) return;
-  
+
     const offer = await peerConnection.current.createOffer();
     await peerConnection.current.setLocalDescription(offer);
-  
+
     // Send the offer to the signaling server
     webSocket.current?.send(JSON.stringify({ type: "offer", offer }));
+
+    // Trigger sentence generation after a short delay
+    if (isFirstCaller.current) {
+      setTimeout(() => {
+        const generatedSentence = "Your generated sentence goes here!";
+        sentence.current = generatedSentence;
+        setSentence1(-1);
+        setSentence2(-1);
+
+        // Send the sentence to the other caller
+        webSocket.current?.send(
+          JSON.stringify({ type: "sentence", sentence: generatedSentence })
+        );
+      }, 3000); // 3-second delay (adjust as needed)
+    }
   };
-  
 
   const endCall = () => {
     peerConnection.current?.close();
