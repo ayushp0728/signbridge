@@ -8,9 +8,9 @@ const Navbar: React.FC = () => {
             <ul>
                 <li>
                     <Link to="/">Dashboard</Link>
-                    <Link to="/learning">Learning</Link>
                     <Link to="/partner-mode">Partner Mode</Link>
-                    <Link to="/lobby">Lobby</Link>
+                    <Link to="/lobby">Learning Rooms</Link>
+                    <Link to="/friends">Friends</Link>
                     <Link to="/profile">Profile</Link>
                 </li>
             </ul>

@@ -11,9 +11,11 @@ import Learning from "./components/Learning";
 import Navbar from "./components/Navbar";
 import SignIn from "./components/SignIn";
 import LearningRoom from "./components/LearningRoom";
-import Lobby from "./components/Lobby";
+import Lobby from "./components/Lobby2";
 import { useAuth } from "./components/AuthContext";
 import Profile from "./components/Profile";
+import Friends from "./components/Friends";
+import LearningRoomB from "./components/LearningRoomB";
 
 const App: React.FC = () => {
   const { user, loading } = useAuth();
@@ -39,6 +41,8 @@ const App: React.FC = () => {
             path="/learning"
             element={user ? <Learning /> : <Navigate to="/signin" />}
           />
+          <Route path="/learning/:index/" element={<LearningRoomB />} />
+
           <Route
             path="/profile"
             element={user ? <Profile /> : <Navigate to="/profile" />}
@@ -47,9 +51,13 @@ const App: React.FC = () => {
             path="/lobby"
             element={user ? <Lobby /> : <Navigate to="/signin" />}
           />
+          <Route
+            path="/friend"
+            element={user ? <Friends /> : <Navigate to="/signin" />}
+          />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/lobby" element={<Lobby />} />
-          <Route path="/room/:roomid" element={<LearningRoom />} />
+          <Route path="/friends" element={<Friends />} />
         </Routes>
       </div>
     </Router>
