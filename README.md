@@ -1,4 +1,5 @@
-Sign Language Recognition Project
+# Sign Language Recognition Project
+
 This project is a real-time sign language recognition application designed to assist communication through visual gesture recognition. The project uses a machine learning model trained to detect various sign language gestures, a WebRTC-based video streaming setup for capturing live video, and a clean web interface for ease of use.
 
 Table of Contents
@@ -19,37 +20,43 @@ User-friendly Interface: Clean web interface that displays recognized gestures a
 Efficient Model Integration: Seamless integration of the machine learning model with a responsive web frontend.
 Compatibility Across Devices: Works on desktops and laptops with webcam support.
 Demo
-[Link to Demo Video/GIF] (Insert link if available)
 
 Screenshots:
 
 
 Technologies Used
 Python: For training the machine learning model and data preprocessing.
-TensorFlow/Keras: Framework for building and training the gesture recognition model.
+TensorFlow: Framework for building and training the gesture recognition model.
+Mediapipe: Hand landmark method
 JavaScript (WebRTC): For real-time video capture and streaming.
-Flask/Django: Backend framework to serve the application.
-React/Vue: Frontend framework for the user interface.
+FastAPI: Backend framework to serve the application.
+React: Frontend framework for the user interface.
 HTML/CSS: Structure and styling of the web interface.
-Installation
+
+# Installation
 Clone the Repository:
 
 bash
 Copy code
-git clone https://github.com/yourusername/sign-language-recognition
-cd sign-language-recognition
-Install Dependencies:
+git clone https://github.com/ayushp0728/signbridge.git
+
+cd signbridge
+
+# Install Dependencies:
 
 Ensure Python and Node.js are installed.
 Install backend dependencies:
 bash
 Copy code
 pip install -r requirements.txt
-Install frontend dependencies:
+
+# Install frontend dependencies:
+
 bash
 Copy code
 cd frontend
 npm install
+
 Set up WebRTC:
 
 Ensure your webcam has permission in your browser or operating system settings.
@@ -62,16 +69,20 @@ Run the Application:
 
 bash
 Copy code
-# Backend
-python app.py
 
-# Frontend
+# Run the Backend
+cd backend
+uvicorn main:app --reload 
+
+# Run the Frontend
 cd frontend
 npm start
 Access the Application:
 
 Navigate to http://localhost:3000 in your web browser.
-Usage
+
+# Usage
+
 Open the Application: Once the application is running, navigate to the local server link in your browser.
 Enable Webcam: Grant permission for the application to access your webcam.
 Start Signing: Begin using sign language gestures in front of your camera. The recognized gestures will be displayed in real-time on the screen.
@@ -93,7 +104,8 @@ python train.py
 Evaluate and save the model in models/.
 For more details, refer to the train.py documentation.
 
-Future Enhancements
+# Future Enhancements
+
 Add More Signs: Expand the vocabulary of recognized gestures.
 Mobile Support: Develop a mobile-friendly version for broader accessibility.
 Improved Model Accuracy: Experiment with different model architectures and training datasets.
