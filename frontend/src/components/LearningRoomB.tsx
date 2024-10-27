@@ -74,7 +74,7 @@ const LearningRoomB: React.FC = () => {
       // Set timeout to capture and send frame to API
       intervalRef.current = setInterval(() => {
         captureAndSendFrame(); // Call the function to capture and send frame
-      }, 1000); // 3 seconds
+      }, 100); // ms
     } catch (error) {
       console.error("Error accessing webcam:", error);
     }
