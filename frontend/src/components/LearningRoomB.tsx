@@ -31,6 +31,10 @@ const LearningRoomB: React.FC = () => {
     "4", "5", "6", "7", "8", "9"
   ];
 
+  const links = [
+    "/f.png", "/e.png", "/d.png", "/c.png", "/b.png", "/a.png"
+  ];
+
   // Handle navigation to next or previous character
   const goToPrevious = () => {
     if (validIndex > 0) {
@@ -67,10 +71,9 @@ const LearningRoomB: React.FC = () => {
   };
 
   const captureAndSendFrame = () => {
-    // Skip capture if processing a previous frame
     if (isProcessing || !videoRef.current || !canvasRef.current) return;
 
-    setIsProcessing(true); // Set processing to true at the start
+    setIsProcessing(true);
 
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -126,18 +129,17 @@ const LearningRoomB: React.FC = () => {
           } catch (error) {
             console.error("Error sending frame:", error);
           } finally {
-            // Reset processing flag after API response completes
             setIsProcessing(false);
           }
         } else {
-          setIsProcessing(false); // Reset in case of no blob
+          setIsProcessing(false);
         }
       }, "image/jpeg");
     } else {
-      setIsProcessing(false); // Reset in case of no context
+      setIsProcessing(false);
     }
   };
-  
+
   const cleanup = () => {
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
@@ -155,7 +157,7 @@ const LearningRoomB: React.FC = () => {
   const toggleWebcam = () => {
     if (isCamActive) {
       cleanup();
-      setIsAnswerLogged(false); // Reset logging flag on start
+      setIsAnswerLogged(false);
     } else {
       startVideo();
     }
@@ -172,12 +174,18 @@ const LearningRoomB: React.FC = () => {
     <div className="flex items-center justify-center h-screen bg-gray-100 p-6">
       <div className="w-1/3 flex items-center justify-center p-4">
         <h1 className="text-9xl font-bold text-gray-800">
+          <img
+            src={`${process.env.PUBLIC_URL}${links[validIndex]}`} // Access image in public folder
+            alt={characters[validIndex]} // Alt text
+            className="mb-4 w-48 h-48"
+          />
           {characters[validIndex]}
         </h1>
       </div>
 
       <div className="flex-1 flex items-center justify-center flex-col">
-        <div className={`overflow-hidden rounded-lg w-3/4 h-3/5 max-w-2xl max-h-[70vh] mb-4 ${
+        <div
+          className={`overflow-hidden rounded-lg w-3/4 h-3/5 max-w-2xl max-h-[70vh] mb-4 ${
             !isCamActive
               ? "bg-gray-300 shadow-none"
               : hasResult

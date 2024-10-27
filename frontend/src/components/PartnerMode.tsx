@@ -217,13 +217,13 @@ const PartnerMode: React.FC = () => {
               const { letter } = jsonResponse;
 
               const doneLetterCount = sentence2 ?? 0;
-              if (doneLetterCount < sentence.current.length) {
-                const nextLetterNeeded =
-                  sentence.current[(sentence2 ?? -1) + 1];
-                if (letter === nextLetterNeeded) {
-                  setSentence1((sentence2 ?? -1) + 1);
-                }
-              }
+              // if (doneLetterCount < sentence.current.length) {
+              //   const nextLetterNeeded =
+              //     sentence.current[(sentence2 ?? -1) + 1];
+              //   if (letter === nextLetterNeeded) {
+              //     setSentence1((sentence2 ?? -1) + 1);
+              //   }
+              // }
             } else {
               console.error(
                 "Error in getting user1 progress:",
